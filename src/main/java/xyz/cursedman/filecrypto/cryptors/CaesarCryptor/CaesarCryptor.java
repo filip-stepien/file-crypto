@@ -11,7 +11,7 @@ public class CaesarCryptor extends Cryptor {
 
     @Override
     public void encrypt(InputStream in, OutputStream out) throws IOException {
-        CezarCryptorKey key = (CezarCryptorKey) getKey();
+        CaesarCryptorKey key = (CaesarCryptorKey) getKey();
         int shift = key.getShift();
 
         int data;
@@ -22,7 +22,7 @@ public class CaesarCryptor extends Cryptor {
 
     @Override
     public void decrypt(InputStream in, OutputStream out) throws IOException {
-        CezarCryptorKey key = (CezarCryptorKey) getKey();
+        CaesarCryptorKey key = (CaesarCryptorKey) getKey();
         int shift = key.getShift();
 
         int data;

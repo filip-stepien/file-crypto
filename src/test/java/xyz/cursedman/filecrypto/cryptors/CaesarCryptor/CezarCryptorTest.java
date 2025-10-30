@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 class CezarCryptorTest {
     Cryptor cezarCryptor = CaesarCryptor.builder().key(
-            CezarCryptorKey.builder()
+            CaesarCryptorKey.builder()
                     .shift(3)
                     .build()
     ).build();

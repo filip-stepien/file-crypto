@@ -8,6 +8,6 @@ import xyz.cursedman.filecrypto.cryptors.CryptorKey;
 @Setter
 @Getter
 @Builder
-public class CezarCryptorKey implements CryptorKey {
+public class CaesarCryptorKey implements CryptorKey {
     int shift;
 }
