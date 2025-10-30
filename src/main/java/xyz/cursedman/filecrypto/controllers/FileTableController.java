@@ -3,13 +3,10 @@ package xyz.cursedman.filecrypto.controllers;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.input.DragEvent;
+import javafx.scene.control.*;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.stage.DirectoryChooser;
@@ -23,6 +20,12 @@ public class FileTableController {
 
     @FXML
     private TableView<File> fileTableView;
+
+    @FXML
+    private Button removeButton;
+
+    @FXML
+    private Label itemsCounter;
 
     @FXML
     private TableColumn<File, String> fileNameColumn;
@@ -40,13 +43,101 @@ public class FileTableController {
 
     private final ObservableList<File> fileList = FXCollections.observableArrayList();
 
+    private void setItemCount() {
+        int itemsCount = fileSet.size();
+        int selectedItemsCount = fileTableView.getSelectionModel().getSelectedItems().size();
+
+        String itemsCountText = itemsCount + (itemsCount == 1 ? " item" : " items");
+        String selectedItemsCountText =
+                selectedItemsCount > 0 ? "(" + selectedItemsCount + " selected)" : "";
+
+        itemsCounter.setText(itemsCountText + " " + selectedItemsCountText);
+    }
+
+    private void clearSelection() {
+        fileTableView.getSelectionModel().clearSelection();
+        setItemCount();
+    }
+
+    private void addFiles(List<File> files) {
+        List<File> newFiles = files.stream()
+                .filter(fileSet::add)
+                .toList();
+
+        if (!newFiles.isEmpty()) {
+            fileList.addAll(newFiles);
+            fileTableView.sort();
+            setItemCount();
+        }
+    }
+
+    private void removeFiles(List<File> files) {
+        files.forEach(fileSet::remove);
+        fileList.removeAll(files);
+        clearSelection();
+    }
+
+    private void clearFiles() {
+        fileList.clear();
+        fileSet.clear();
+        setItemCount();
+    }
+
     private void initializeTable() {
         fileTableView.setItems(fileList);
         fileTableView.setPlaceholder(new Label("Drop files here or click \"Add items\" to select"));
-        fileTableView.setOnDragOver(this::handleDragOver);
-        fileTableView.setOnDragDropped(this::handleDragDropped);
+
+        fileTableView.setOnDragOver(event -> {
+            Dragboard db = event.getDragboard();
+
+            if (db.hasFiles()) {
+                event.acceptTransferModes(TransferMode.COPY);
+            }
+
+            event.consume();
+        });
+
+        fileTableView.setOnDragDropped(event -> {
+            Dragboard db = event.getDragboard();
+            boolean success = false;
+
+            if (db.hasFiles()) {
+                addFiles(db.getFiles());
+                success = true;
+            }
+
+            event.setDropCompleted(success);
+            event.consume();
+        });
+
+        fileTableView.setRowFactory(tableView -> {
+            TableRow<File> row = new TableRow<>();
+
+            row.setOnMouseClicked(event -> {
+                if (row.isEmpty()) {
+                    clearSelection();
+                }
+            });
+
+            return row ;
+        });
+
+        fileTableView.focusedProperty().addListener(
+            (observable, isFocused, wasFocused) -> {
+                if (!isFocused) {
+                    clearSelection();
+                }
+        });
+
+        fileTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        fileTableView.getSelectionModel()
+            .getSelectedItems()
+            .addListener((ListChangeListener<File>) c -> setItemCount());
+
         fileTableView.getSortOrder().add(fileIconColumn);
         fileTableView.sort();
+
+        removeButton.setFocusTraversable(false);
     }
 
     private void initializeTableColumns() {
@@ -71,14 +162,14 @@ public class FileTableController {
         fileIconColumn.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(File file, boolean empty) {
-            super.updateItem(file, empty);
-            if (empty || file == null) {
-                setGraphic(null);
-            } else {
-                FontIcon icon = new FontIcon(file.isDirectory() ? "fas-folder" : "far-file");
-                icon.setIconSize(12);
-                setGraphic(icon);
-            }
+                super.updateItem(file, empty);
+                if (empty || file == null) {
+                    setGraphic(null);
+                } else {
+                    FontIcon icon = new FontIcon(file.isDirectory() ? "fas-folder" : "far-file");
+                    icon.setIconSize(12);
+                    setGraphic(icon);
+                }
             }
         });
 
@@ -91,38 +182,14 @@ public class FileTableController {
         fileIconColumn.setSortType(TableColumn.SortType.DESCENDING);
     }
 
-    private void addFiles(List<File> files) {
-        List<File> newFiles = files.stream()
-            .filter(fileSet::add)
-            .toList();
-
-        if (!newFiles.isEmpty()) {
-            fileList.addAll(newFiles);
-            fileTableView.sort();
-        }
+    public Collection<File> getFiles() {
+        return fileList;
     }
 
-    private void handleDragOver(DragEvent event) {
-        Dragboard db = event.getDragboard();
-
-        if (db.hasFiles()) {
-            event.acceptTransferModes(TransferMode.COPY);
-        }
-
-        event.consume();
-    }
-
-    private void handleDragDropped(DragEvent event) {
-        Dragboard db = event.getDragboard();
-        boolean success = false;
-
-        if (db.hasFiles()) {
-            addFiles(db.getFiles());
-            success = true;
-        }
-
-        event.setDropCompleted(success);
-        event.consume();
+    @FXML
+    private void initialize() {
+        initializeTable();
+        initializeTableColumns();
     }
 
     @FXML
@@ -144,8 +211,13 @@ public class FileTableController {
     }
 
     @FXML
-    public void initialize() {
-        initializeTable();
-        initializeTableColumns();
+    private void handleRemoveSelectedItems() {
+        List<File> selected = fileTableView.getSelectionModel().getSelectedItems();
+        removeFiles(selected);
+    }
+
+    @FXML
+    private void handleRemoveAllItems() {
+        clearFiles();
     }
 }

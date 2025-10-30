@@ -5,7 +5,12 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox spacing="10.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="xyz.cursedman.filecrypto.controllers.FileTableController">
+<VBox
+    spacing="10.0"
+    xmlns="http://javafx.com/javafx/17.0.12"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="xyz.cursedman.filecrypto.controllers.FileTableController"
+>
     <VBox spacing="5.0">
         <Label text="Items to encrypt">
             <font>
@@ -17,7 +22,13 @@
     <VBox>
         <TableView fx:id="fileTableView" prefWidth="600.0">
             <columns>
-                <TableColumn fx:id="fileIconColumn" prefWidth="25.0" resizable="false" sortType="DESCENDING" style="-fx-alignment: CENTER;" />
+                <TableColumn
+                    fx:id="fileIconColumn"
+                    prefWidth="25.0"
+                    resizable="false"
+                    sortType="DESCENDING"
+                    style="-fx-alignment: CENTER;"
+                />
                 <TableColumn fx:id="fileNameColumn" prefWidth="-1.0" text="Name" />
                 <TableColumn fx:id="fileSizeColumn" prefWidth="-1.0" text="Size" />
                 <TableColumn fx:id="fileLastModifiedColumn" prefWidth="-1.0" text="Last modified" />
@@ -31,12 +42,29 @@
                 <padding>
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                 </padding>
-                <Label text="0 items" HBox.hgrow="ALWAYS" />
+                <Label fx:id="itemsCounter" text="0 items" HBox.hgrow="ALWAYS" />
                 <HBox alignment="TOP_RIGHT" spacing="10.0" HBox.hgrow="ALWAYS">
-                    <Button layoutX="360.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleAddFiles" text="Add files..." />
-                    <Button layoutX="360.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleAddFolders" text="Add folders..." />
-                    <Button mnemonicParsing="false" text="Remove selected" />
-                    <Button mnemonicParsing="false" text="Remove all" />
+                    <Button
+                        layoutX="360.0"
+                        layoutY="10.0"
+                        mnemonicParsing="false"
+                        onAction="#handleAddFiles"
+                        text="Add files..."
+                    />
+                    <Button
+                        layoutX="360.0"
+                        layoutY="10.0"
+                        mnemonicParsing="false"
+                        onAction="#handleAddFolders"
+                        text="Add folders..."
+                    />
+                    <Button
+                        mnemonicParsing="false"
+                        text="Remove selected"
+                        fx:id="removeButton"
+                        onAction="#handleRemoveSelectedItems"
+                    />
+                    <Button mnemonicParsing="false" text="Remove all" onAction="#handleRemoveAllItems" />
                 </HBox>
             </HBox>
         </ToolBar>
