@@ -1,4 +1,4 @@
-package xyz.cursedman.filecrypto;
+package xyz.cursedman.filecrypto.controllers;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
@@ -18,8 +18,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 
-public class HelloController {
-
+public class FileTableController {
     @FXML
     private TableView<File> fileTableView;
 

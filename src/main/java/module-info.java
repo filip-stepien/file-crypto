@@ -5,6 +5,7 @@ module xyz.cursedman.filecrypto {
     requires org.kordamp.bootstrapfx.core;
     requires org.kordamp.ikonli.javafx;
 
-    opens xyz.cursedman.filecrypto to javafx.fxml;
+    opens xyz.cursedman.filecrypto.controllers to javafx.fxml;
+
     exports xyz.cursedman.filecrypto;
 }

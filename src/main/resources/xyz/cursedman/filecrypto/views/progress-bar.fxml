@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox
+    xmlns="http://javafx.com/javafx/17.0.12"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="xyz.cursedman.filecrypto.controllers.ProgressBarController"
+    alignment="CENTER_LEFT"
+    spacing="20.0"
+    BorderPane.alignment="CENTER"
+>
+    <padding>
+        <Insets bottom="10.0" top="10.0"/>
+    </padding>
+    <StackPane maxWidth="Infinity" HBox.hgrow="ALWAYS">
+        <ProgressBar maxWidth="Infinity" prefHeight="25.0" progress="0.76" style="-fx-accent: #01D328;"/>
+        <Label text="Done"/>
+    </StackPane>
+    <Button mnemonicParsing="false" prefWidth="80.0" text="Encrypt"/>
+</HBox>
