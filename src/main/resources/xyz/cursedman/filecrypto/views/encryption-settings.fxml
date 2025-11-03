@@ -24,8 +24,15 @@
     <VBox spacing="5.0">
         <Label text="Vault password"/>
         <HBox spacing="10.0">
-            <PasswordField promptText="Enter password..." HBox.hgrow="ALWAYS"/>
-            <Button mnemonicParsing="false" text="Show"/>
+            <StackPane HBox.hgrow="ALWAYS">
+                <children>
+                    <TextField fx:id="passwordTextField" managed="false" visible="false"/>
+
+                    <PasswordField fx:id="passwordField" promptText="Enter password..." />
+                </children>
+            </StackPane>
+
+            <Button fx:id="showPasswordButton" mnemonicParsing="false" onAction="#togglePasswordVisibility" text="Show"/>
         </HBox>
     </VBox>
     <VBox layoutX="10.0" layoutY="37.0" spacing="5.0">
