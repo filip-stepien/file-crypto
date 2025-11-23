@@ -14,8 +14,7 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class XorKeyCreator implements KeyCreator {
 
-    @Override
-    public String getAlgorithmName() {
+    public static String getAlgorithmName() {
         return "Xor cipher";
     }
 
@@ -27,6 +26,7 @@ public class XorKeyCreator implements KeyCreator {
                         .label("key")
                         .id("key")
                         .description("key as hex")
+                        .placeholder("Enter a hexadecimal key...")
                         .build()
         );
     }

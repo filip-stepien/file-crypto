@@ -1,17 +1,19 @@
 package xyz.cursedman.filecrypto.controls;
 
-import javafx.scene.control.Control;
+import javafx.scene.Node;
 import javafx.scene.control.Spinner;
 
 public class NumberControl implements FieldControl {
     private final Spinner<Integer> spinner = new Spinner<>(0, Integer.MAX_VALUE, 0);
 
-    public NumberControl() {
+    public NumberControl(String defaultValue, String placeholder) {
+        spinner.getValueFactory().setValue(Integer.parseInt(defaultValue));
+        spinner.setPromptText(placeholder);
         spinner.setEditable(true);
     }
 
     @Override
-    public Control getControl() {
+    public Node getNode() {
         return spinner;
     }
 

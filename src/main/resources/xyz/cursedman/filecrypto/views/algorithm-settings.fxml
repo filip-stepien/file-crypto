@@ -12,7 +12,7 @@
 >
     <VBox layoutX="10.0" layoutY="37.0" spacing="5.0">
         <Label text="Encryption algorithm"/>
-        <ComboBox prefWidth="250.0" promptText="Choose algorithm..."/>
+        <ComboBox fx:id="algorithmComboBox" prefWidth="250.0" promptText="Choose algorithm..."/>
     </VBox>
     <TitledPane prefWidth="200.0" text="Algorithm settings">
         <ScrollPane hbarPolicy="NEVER" prefHeight="1000.0" prefWidth="250.0">

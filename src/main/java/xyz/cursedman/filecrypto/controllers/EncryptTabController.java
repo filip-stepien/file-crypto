@@ -16,5 +16,7 @@ public class EncryptTabController {
     @FXML
     public void initialize() {
         progressBarController.setButtonText("Encrypt");
+
+
     }
 }

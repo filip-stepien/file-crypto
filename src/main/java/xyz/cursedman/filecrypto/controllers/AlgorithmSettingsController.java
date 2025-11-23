@@ -1,35 +1,75 @@
 package xyz.cursedman.filecrypto.controllers;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.VBox;
 import xyz.cursedman.filecrypto.controls.FieldControl;
+import xyz.cursedman.filecrypto.controls.FieldInfo;
 import xyz.cursedman.filecrypto.controls.NumberControl;
 import xyz.cursedman.filecrypto.controls.TextControl;
 import xyz.cursedman.filecrypto.keys.KeyCreator;
 import xyz.cursedman.filecrypto.keys.KeyInputField;
-import xyz.cursedman.filecrypto.keys.KeyInputType;
+import xyz.cursedman.filecrypto.keys.impl.CaesarKeyCreator;
+import xyz.cursedman.filecrypto.keys.impl.XorKeyCreator;
 
 import java.util.*;
 
 public class AlgorithmSettingsController {
+
+    private final Map<String, KeyCreator> availableAlgorithms = Map.of(
+        CaesarKeyCreator.getAlgorithmName(), new CaesarKeyCreator(),
+        XorKeyCreator.getAlgorithmName(), new XorKeyCreator()
+    );
+
+    @FXML
+    private ComboBox<String> algorithmComboBox;
 
     @FXML
     private VBox settingsContainer;
 
     private final Map<String, FieldControl> currentControls = new HashMap<>();
 
-    private FieldControl resolveControlType(KeyInputType type) {
-        return switch (type) {
-            case TEXT -> new TextControl();
-            case NUMBER -> new NumberControl();
-            default -> throw new RuntimeException("Unsupported key input type type: " + type);
+    @FXML
+    private void initialize() {
+        algorithmComboBox.getItems().addAll(availableAlgorithms.keySet());
+        algorithmComboBox.getSelectionModel().selectedItemProperty().addListener(
+            (obs, prev, curr) -> {
+                selectAlgorithm(curr);
+            }
+        );
+
+        selectAlgorithm(CaesarKeyCreator.getAlgorithmName());
+    }
+
+    private void selectAlgorithm(String algorithmName) {
+        if (availableAlgorithms.containsKey(algorithmName)) {
+            algorithmComboBox.getSelectionModel().select(algorithmName);
+            setKeyCreator(availableAlgorithms.get(algorithmName));
+        }
+    }
+
+    private FieldInfo resolveField(KeyInputField field) {
+        FieldInfo.FieldInfoBuilder fieldInfo = FieldInfo.builder()
+            .label(field.getLabel())
+            .description(field.getDescription());
+
+        switch (field.getType()) {
+            case TEXT, HEX -> fieldInfo.fieldControl(
+                new TextControl(field.getDefaultValue(), field.getPlaceholder())
+            );
+            case NUMBER -> fieldInfo.fieldControl(
+                new NumberControl(field.getDefaultValue(), field.getPlaceholder())
+            );
+            default -> throw new RuntimeException("Unsupported key input type type: " + field.getType());
         };
+
+        return fieldInfo.build();
     }
 
     private void createControl(KeyInputField field) {
-        FieldControl control = resolveControlType(field.getType());
-        settingsContainer.getChildren().add(control.getControl());
-        currentControls.put(field.getId(), control);
+        FieldInfo fieldInfo = resolveField(field);
+        settingsContainer.getChildren().add(fieldInfo.getNode());
+        currentControls.put(field.getId(), fieldInfo.getFieldControl());
     }
 
     private void clearControls() {

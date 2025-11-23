@@ -1,13 +1,10 @@
 package xyz.cursedman.filecrypto.controls;
 
-import javafx.scene.control.Control;
-import lombok.AllArgsConstructor;
-
+import javafx.scene.Node;
 
 public interface FieldControl {
 
-    public abstract Control getControl();
+    Node getNode();
 
-    public abstract String getControlValue();
-
+    String getControlValue();
 }

@@ -14,8 +14,7 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class CaesarKeyCreator implements KeyCreator {
 
-    @Override
-    public String getAlgorithmName() {
+    public static String getAlgorithmName() {
         return "Caesar Cipher";
     }
 
@@ -46,6 +45,7 @@ public class CaesarKeyCreator implements KeyCreator {
                         .description("shift")
                         .type(KeyInputType.NUMBER)
                         .defaultValue("6")
+                        .placeholder("Enter shift number...")
                         .build()
         );
     }

@@ -12,5 +12,9 @@ public class KeyInputField {
 
     private final String description;
 
-    private KeyInputType type;
+    private final KeyInputType type;
+
+    private final String defaultValue;
+
+    private final String placeholder;
 }
