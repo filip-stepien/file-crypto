@@ -32,7 +32,7 @@ public class CaesarKeyCreator implements KeyCreator {
         SecureRandom random = new SecureRandom();
         return createKey(
                 Map.of(
-                        "shift", String.valueOf(random.nextInt(256))
+                        "shift", String.valueOf(random.nextInt(Byte.MAX_VALUE - Byte.MIN_VALUE +1))
                 )
         );
     }
