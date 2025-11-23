@@ -2,13 +2,15 @@ package xyz.cursedman.filecrypto.keys;
 
 import xyz.cursedman.filecrypto.cryptors.CryptorKey;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 public interface KeyCreator {
+
     String getAlgorithmName();
 
-    List<KeyInputField> getKeyInputFields();
+    Collection<KeyInputField> getKeyInputFields();
 
     /*
      * Create key based on GUI-provided values
