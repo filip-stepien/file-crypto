@@ -10,8 +10,6 @@ public interface KeyCreator {
 
     List<KeyInputField> getKeyInputFields();
 
-    CryptorKey getCryptorKey();
-
     /*
     * Create key based on GUI-provided values
     * map: fieldId -> user value

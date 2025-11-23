@@ -8,6 +8,7 @@ import lombok.Getter;
 public class KeyInputField {
     private final String id;
     private final String label;
+    private final String description;
     KeyInputType type;
     private String defaultValue;
 }
