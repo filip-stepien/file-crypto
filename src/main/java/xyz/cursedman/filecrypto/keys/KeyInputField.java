@@ -1,6 +1,10 @@
 package xyz.cursedman.filecrypto.keys;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+
+import java.util.List;
 
 @Builder
 @Data
@@ -17,4 +21,7 @@ public class KeyInputField {
     private final String defaultValue;
 
     private final String placeholder;
+
+    // Used when type is selection
+    private final List<String> options;
 }

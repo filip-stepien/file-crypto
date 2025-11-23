@@ -3,7 +3,6 @@ package xyz.cursedman.filecrypto.keys;
 import xyz.cursedman.filecrypto.cryptors.CryptorKey;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 public interface KeyCreator {
@@ -20,9 +19,15 @@ public interface KeyCreator {
      */
     CryptorKey createKey(Map<String, String> fieldValues);
 
+
+    /*
+     * fields that generateCryptorKey takes
+     */
+    Collection<KeyInputField> getKeyGeneratorFields();
+
     /*
      * Create a fully random key (GUI may use a "Generate" button)
      */
-    CryptorKey generateCryptorKey();
+    CryptorKey generateCryptorKey(Map<String, String> fieldValues);
 
 }

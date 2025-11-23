@@ -7,6 +7,7 @@ import xyz.cursedman.filecrypto.keys.KeyInputField;
 import xyz.cursedman.filecrypto.keys.KeyInputType;
 
 import java.security.SecureRandom;
+import java.util.Collection;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
@@ -40,8 +41,23 @@ public class XorKeyCreator implements KeyCreator {
     }
 
     @Override
-    public CryptorKey generateCryptorKey() {
-        int keyLength = 16; // default key length in bytes
+    public Collection<KeyInputField> getKeyGeneratorFields() {
+        return List.of(
+                KeyInputField.builder()
+                        .id("length")
+                        .label("length")
+                        .defaultValue("10")
+                        .description("key length")
+                        .type(KeyInputType.NUMBER)
+                        .placeholder("Enter a key length")
+                        .build()
+        );
+    }
+
+
+    @Override
+    public CryptorKey generateCryptorKey(Map<String, String> fieldValues) {
+        int keyLength = Integer.parseInt(fieldValues.get("length"));
         byte[] randomKey = new byte[keyLength];
 
         SecureRandom random = new SecureRandom();
