@@ -19,10 +19,10 @@
                 <Insets bottom="10.0" left="20.0" right="20.0" top="20.0"/>
             </padding>
             <top>
-                <fx:include source="decryption-settings.fxml" />
+                <fx:include fx:id="decryptionSettings" source="decryption-settings.fxml" />
             </top>
             <bottom>
-                <fx:include source="progress-bar.fxml" />
+                <fx:include fx:id="progressBar" source="progress-bar.fxml" />
             </bottom>
         </BorderPane>
     </AnchorPane>

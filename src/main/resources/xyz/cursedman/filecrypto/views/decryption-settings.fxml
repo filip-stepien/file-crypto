@@ -22,22 +22,16 @@
     <VBox spacing="5.0">
         <Label text="Encrypted file"/>
         <HBox alignment="CENTER_LEFT" spacing="10.0">
-            <TextField editable="false" prefWidth="250.0" promptText="Select or drag a file here..."/>
+            <TextField fx:id="encryptedFilePathField" editable="false" prefWidth="250.0" promptText="Select or drag a file here..."/>
             <Button mnemonicParsing="false" prefWidth="50.0" text="Select"/>
         </HBox>
     </VBox>
     <VBox spacing="5.0">
         <Label text="Output path"/>
         <HBox alignment="CENTER_LEFT" spacing="10.0">
-            <TextField editable="false" prefWidth="250.0" promptText="Select path..."/>
+            <TextField fx:id="outputFilePathField" editable="false" prefWidth="250.0" promptText="Select path..."/>
             <Button mnemonicParsing="false" prefWidth="50.0" text="Select"/>
         </HBox>
     </VBox>
-    <VBox spacing="5.0">
-        <Label text="Vault password"/>
-        <HBox spacing="10.0">
-            <PasswordField maxWidth="250.0" promptText="Enter password..." HBox.hgrow="ALWAYS"/>
-            <Button mnemonicParsing="false" prefWidth="50.0" text="Show"/>
-        </HBox>
-    </VBox>
+    <fx:include fx:id="passwordInput" source="password-input.fxml"/>
 </VBox>

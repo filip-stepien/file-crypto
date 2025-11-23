@@ -16,8 +16,8 @@
         <Insets bottom="10.0" top="10.0"/>
     </padding>
     <StackPane maxWidth="Infinity" HBox.hgrow="ALWAYS">
-        <ProgressBar maxWidth="Infinity" prefHeight="25.0" progress="0.76" style="-fx-accent: #01D328;"/>
-        <Label text="Done"/>
+        <ProgressBar fx:id="progressBar" maxWidth="Infinity" prefHeight="25.0" progress="0" style="-fx-accent: #01D328;"/>
+        <Label fx:id="progressBarLabel" />
     </StackPane>
-    <Button mnemonicParsing="false" prefWidth="80.0" text="Encrypt"/>
+    <Button fx:id="button" mnemonicParsing="false" prefWidth="80.0"/>
 </HBox>

@@ -40,4 +40,8 @@ public class PasswordInputController {
             showPasswordButton.setText("Hide");
         }
     }
+
+    public String getPassword() {
+        return passwordTextField.getText();
+    }
 }
