@@ -1,13 +1,17 @@
 package xyz.cursedman.filecrypto.controllers;
 
 import javafx.fxml.FXML;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class EncryptionSettingsController {
 
     @FXML
-    public PasswordInputController passwordInputController;
+    private PasswordInputController passwordInputController;
 
     @FXML
-    public AlgorithmSettingsController algorithmSettingsController;
+    private AlgorithmSettingsController algorithmSettingsController;
 
 }

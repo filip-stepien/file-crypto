@@ -1,5 +1,7 @@
 package xyz.cursedman.filecrypto.controllers;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
@@ -26,5 +28,9 @@ public class ProgressBarController {
 
     public void setProgressBarLabel(String text) {
         progressBarLabel.setText(text);
+    }
+
+    public void setOnButtonClick(EventHandler<ActionEvent> handler) {
+        button.setOnAction(handler);
     }
 }
