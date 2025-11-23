@@ -1,0 +1,5 @@
+root = true
+
+[*.java]
+tab_width = 4
+indent_style = space
