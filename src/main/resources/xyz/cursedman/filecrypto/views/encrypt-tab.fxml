@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<Tab text="Encrypt" xmlns="http://javafx.com/javafx/17.0.12"
+     xmlns:fx="http://javafx.com/fxml/1"
+     fx:controller="xyz.cursedman.filecrypto.controllers.EncryptTabController"
+>
+    <AnchorPane minHeight="0.0" minWidth="0.0">
+        <VBox spacing="10.0">
+            <padding>
+                <Insets bottom="10.0" left="20.0" right="20.0" top="20.0"/>
+            </padding>
+            <HBox alignment="CENTER" spacing="20.0">
+                <fx:include source="file-table.fxml"/>
+                <fx:include source="encryption-settings.fxml"/>
+            </HBox>
+            <fx:include source="progress-bar.fxml"/>
+        </VBox>
+    </AnchorPane>
+</Tab>
+

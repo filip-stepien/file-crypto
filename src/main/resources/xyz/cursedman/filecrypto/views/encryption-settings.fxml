@@ -3,12 +3,11 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.geometry.*?>
 
 <VBox
     xmlns="http://javafx.com/javafx/17.0.12"
     xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="xyz.cursedman.filecrypto.controllers.AlgorithmSettingsController"
+    fx:controller="xyz.cursedman.filecrypto.controllers.EncryptionSettingsController"
     prefHeight="100.0"
     prefWidth="250.0"
     spacing="10.0"
@@ -22,19 +21,5 @@
         <Separator prefWidth="200.0"/>
     </VBox>
     <fx:include source="password-input.fxml"/>
-    <VBox layoutX="10.0" layoutY="37.0" spacing="5.0">
-        <Label text="Encryption algorithm"/>
-        <ComboBox prefWidth="250.0" promptText="Choose algorithm..."/>
-    </VBox>
-    <TitledPane prefWidth="200.0" text="Alogirthm settings">
-        <ScrollPane hbarPolicy="NEVER" prefHeight="1000.0" prefWidth="250.0">
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="250.0">
-                <VBox spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="15.0">
-                    <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
-                    </padding>
-                </VBox>
-            </AnchorPane>
-        </ScrollPane>
-    </TitledPane>
+    <fx:include source="algorithm-settings.fxml"/>
 </VBox>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<Tab text="Decrypt" xmlns="http://javafx.com/javafx/17.0.12"
+     xmlns:fx="http://javafx.com/fxml/1"
+     fx:controller="xyz.cursedman.filecrypto.controllers.DecryptTabController"
+>
+    <AnchorPane minHeight="0.0" minWidth="0.0">
+        <BorderPane
+            AnchorPane.bottomAnchor="0.0"
+            AnchorPane.leftAnchor="0.0"
+            AnchorPane.rightAnchor="0.0"
+            AnchorPane.topAnchor="0.0"
+        >
+            <padding>
+                <Insets bottom="10.0" left="20.0" right="20.0" top="20.0"/>
+            </padding>
+            <top>
+                <fx:include source="decryption-settings.fxml" />
+            </top>
+            <bottom>
+                <fx:include source="progress-bar.fxml" />
+            </bottom>
+        </BorderPane>
+    </AnchorPane>
+</Tab>
