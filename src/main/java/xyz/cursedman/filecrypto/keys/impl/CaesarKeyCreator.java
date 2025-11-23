@@ -6,15 +6,16 @@ import xyz.cursedman.filecrypto.keys.KeyCreator;
 import xyz.cursedman.filecrypto.keys.KeyInputField;
 import xyz.cursedman.filecrypto.keys.KeyInputType;
 
-import java.security.InvalidParameterException;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Map;
 
+
+@SuppressWarnings("unused")
 public class CaesarKeyCreator implements KeyCreator {
 
     @Override
-    public String getAlgorithmName(){
+    public String getAlgorithmName() {
         return "Caesar Cipher";
     }
 
@@ -32,12 +33,12 @@ public class CaesarKeyCreator implements KeyCreator {
         SecureRandom random = new SecureRandom();
         return createKey(
                 Map.of(
-                        "shift", String.valueOf(random.nextInt(Byte.MAX_VALUE - Byte.MIN_VALUE +1))
+                        "shift", String.valueOf(random.nextInt(Byte.MAX_VALUE - Byte.MIN_VALUE + 1))
                 )
         );
     }
 
-    public List<KeyInputField> getKeyInputFields(){
+    public List<KeyInputField> getKeyInputFields() {
         return List.of(
                 KeyInputField.builder()
                         .id("shift")

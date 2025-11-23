@@ -11,14 +11,14 @@ public interface KeyCreator {
     List<KeyInputField> getKeyInputFields();
 
     /*
-    * Create key based on GUI-provided values
-    * map: fieldId -> user value
-    */
-    CryptorKey createKey(Map<String, String> fieldValues) throws Exception;
+     * Create key based on GUI-provided values
+     * map: fieldId -> user value
+     */
+    CryptorKey createKey(Map<String, String> fieldValues);
 
     /*
-    * Create a fully random key (GUI may use a "Generate" button)
-    */
+     * Create a fully random key (GUI may use a "Generate" button)
+     */
     CryptorKey generateCryptorKey();
 
 }

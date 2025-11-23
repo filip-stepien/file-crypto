@@ -11,6 +11,7 @@ import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public class XorKeyCreator implements KeyCreator {
 
     @Override
@@ -31,7 +32,7 @@ public class XorKeyCreator implements KeyCreator {
     }
 
     @Override
-    public CryptorKey createKey(Map<String, String> fieldValues) throws Exception {
+    public CryptorKey createKey(Map<String, String> fieldValues) {
         byte[] bytes = HexFormat.of().parseHex(fieldValues.get("key"));
         return XorCryptorKey.builder()
                 .key(bytes)
