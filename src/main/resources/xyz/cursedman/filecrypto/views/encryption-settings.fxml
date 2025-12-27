@@ -20,6 +20,5 @@
         </Label>
         <Separator prefWidth="200.0"/>
     </VBox>
-    <fx:include fx:id="passwordInput" source="password-input.fxml"/>
     <fx:include fx:id="algorithmSettings" source="algorithm-settings.fxml"/>
 </VBox>

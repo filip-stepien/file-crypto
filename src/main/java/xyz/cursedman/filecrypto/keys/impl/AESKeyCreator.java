@@ -1,6 +1,8 @@
 package xyz.cursedman.filecrypto.keys.impl;
 
+import xyz.cursedman.filecrypto.cryptors.AESCryptor.AESCryptor;
 import xyz.cursedman.filecrypto.cryptors.AESCryptor.AESCryptorKey;
+import xyz.cursedman.filecrypto.cryptors.Cryptor;
 import xyz.cursedman.filecrypto.cryptors.CryptorKey;
 import xyz.cursedman.filecrypto.keys.KeyCreator;
 import xyz.cursedman.filecrypto.keys.KeyInputField;
@@ -48,6 +50,15 @@ public class AESKeyCreator implements KeyCreator {
         byte[] keyBytes = HexFormat.of().parseHex(hex);
 
         return AESCryptorKey.fromBytes(keyBytes);
+    }
+
+    @Override
+    public Cryptor createCryptor(CryptorKey key) {
+        if (key.getClass() != AESCryptorKey.class) {
+            throw new RuntimeException("Invalid key type: " + key.getClass());
+        }
+
+        return new AESCryptor((AESCryptorKey) key);
     }
 
     @Override

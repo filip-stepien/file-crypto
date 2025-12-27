@@ -9,9 +9,6 @@ import lombok.Setter;
 public class EncryptionSettingsController {
 
     @FXML
-    private PasswordInputController passwordInputController;
-
-    @FXML
     private AlgorithmSettingsController algorithmSettingsController;
 
 }

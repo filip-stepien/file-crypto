@@ -1,6 +1,10 @@
 package xyz.cursedman.filecrypto.keys.impl;
 
+import xyz.cursedman.filecrypto.cryptors.AESCryptor.AESCryptor;
+import xyz.cursedman.filecrypto.cryptors.AESCryptor.AESCryptorKey;
+import xyz.cursedman.filecrypto.cryptors.CaesarCryptor.CaesarCryptor;
 import xyz.cursedman.filecrypto.cryptors.CaesarCryptor.CaesarCryptorKey;
+import xyz.cursedman.filecrypto.cryptors.Cryptor;
 import xyz.cursedman.filecrypto.cryptors.CryptorKey;
 import xyz.cursedman.filecrypto.keys.KeyCreator;
 import xyz.cursedman.filecrypto.keys.KeyInputField;
@@ -56,5 +60,14 @@ public class CaesarKeyCreator implements KeyCreator {
                                 random.nextInt(Byte.MAX_VALUE - Byte.MIN_VALUE + 1))
                 )
         );
+    }
+
+    @Override
+    public Cryptor createCryptor(CryptorKey key) {
+        if (key.getClass() != CaesarCryptorKey.class) {
+            throw new RuntimeException("Invalid key type: " + key.getClass());
+        }
+
+        return CaesarCryptor.builder().key(key).build();
     }
 }

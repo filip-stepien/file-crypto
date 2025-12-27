@@ -22,14 +22,14 @@
     <VBox spacing="5.0">
         <Label text="Encrypted file"/>
         <HBox alignment="CENTER_LEFT" spacing="10.0">
-            <TextField fx:id="encryptedFilePathField" editable="false" prefWidth="250.0" promptText="Select or drag a file here..."/>
+            <TextField fx:id="encryptedFilePathField" editable="false" promptText="Select or drag a file here..." HBox.hgrow="ALWAYS"/>
             <Button mnemonicParsing="false" prefWidth="50.0" text="Select"/>
         </HBox>
     </VBox>
     <VBox spacing="5.0">
         <Label text="Output path"/>
         <HBox alignment="CENTER_LEFT" spacing="10.0">
-            <TextField fx:id="outputFilePathField" editable="false" prefWidth="250.0" promptText="Select path..."/>
+            <TextField fx:id="outputFilePathField" editable="false" promptText="Select path..." HBox.hgrow="ALWAYS" />
             <Button mnemonicParsing="false" prefWidth="50.0" text="Select"/>
         </HBox>
     </VBox>

@@ -1,6 +1,9 @@
 package xyz.cursedman.filecrypto.keys.impl;
 
+import xyz.cursedman.filecrypto.cryptors.CaesarCryptor.CaesarCryptor;
+import xyz.cursedman.filecrypto.cryptors.Cryptor;
 import xyz.cursedman.filecrypto.cryptors.CryptorKey;
+import xyz.cursedman.filecrypto.cryptors.XorCryptor.XorCryptor;
 import xyz.cursedman.filecrypto.cryptors.XorCryptor.XorCryptorKey;
 import xyz.cursedman.filecrypto.keys.KeyCreator;
 import xyz.cursedman.filecrypto.keys.KeyInputField;
@@ -66,5 +69,14 @@ public class XorKeyCreator implements KeyCreator {
         return XorCryptorKey.builder()
                 .key(randomKey)
                 .build();
+    }
+
+    @Override
+    public Cryptor createCryptor(CryptorKey key) {
+        if (key.getClass() != XorCryptorKey.class) {
+            throw new RuntimeException("Invalid key type: " + key.getClass());
+        }
+
+        return XorCryptor.builder().key(key).build();
     }
 }
