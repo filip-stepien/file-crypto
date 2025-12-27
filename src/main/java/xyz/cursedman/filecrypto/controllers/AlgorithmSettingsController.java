@@ -9,6 +9,7 @@ import xyz.cursedman.filecrypto.controls.NumberControl;
 import xyz.cursedman.filecrypto.controls.TextControl;
 import xyz.cursedman.filecrypto.keys.KeyCreator;
 import xyz.cursedman.filecrypto.keys.KeyInputField;
+import xyz.cursedman.filecrypto.keys.impl.AESKeyCreator;
 import xyz.cursedman.filecrypto.keys.impl.CaesarKeyCreator;
 import xyz.cursedman.filecrypto.keys.impl.XorKeyCreator;
 
@@ -18,7 +19,8 @@ public class AlgorithmSettingsController {
 
     private final Map<String, KeyCreator> availableAlgorithms = Map.of(
         CaesarKeyCreator.getAlgorithmName(), new CaesarKeyCreator(),
-        XorKeyCreator.getAlgorithmName(), new XorKeyCreator()
+        XorKeyCreator.getAlgorithmName(), new XorKeyCreator(),
+        AESKeyCreator.getAlgorithmName(), new AESKeyCreator()
     );
 
     @FXML
@@ -32,8 +34,9 @@ public class AlgorithmSettingsController {
     @FXML
     private void initialize() {
         algorithmComboBox.getItems().addAll(availableAlgorithms.keySet());
-        algorithmComboBox.getSelectionModel().selectedItemProperty().addListener(
-            (obs, prev, curr) -> {
+        algorithmComboBox.getSelectionModel()
+            .selectedItemProperty()
+            .addListener((obs, prev, curr) -> {
                 selectAlgorithm(curr);
             }
         );
@@ -55,13 +58,14 @@ public class AlgorithmSettingsController {
 
         switch (field.getType()) {
             case TEXT, HEX -> fieldInfo.fieldControl(
-                new TextControl(field.getDefaultValue(), field.getPlaceholder())
+                    new TextControl(field.getDefaultValue(), field.getPlaceholder())
             );
             case NUMBER -> fieldInfo.fieldControl(
-                new NumberControl(field.getDefaultValue(), field.getPlaceholder())
+                    new NumberControl(field.getDefaultValue(), field.getPlaceholder())
             );
             default -> throw new RuntimeException("Unsupported key input type type: " + field.getType());
-        };
+        }
+        ;
 
         return fieldInfo.build();
     }
