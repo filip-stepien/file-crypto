@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox
+    xmlns="http://javafx.com/javafx/17.0.12"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="xyz.cursedman.filecrypto.controllers.FileNameInputController"
+    spacing="5.0"
+>
+    <Label text="Output file name" />
+    <TextField fx:id="fileName" promptText="Enter output file name..." HBox.hgrow="ALWAYS" />
+</VBox>

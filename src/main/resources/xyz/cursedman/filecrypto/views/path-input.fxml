@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox
+    spacing="5.0"
+    xmlns="http://javafx.com/javafx/17.0.12"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="xyz.cursedman.filecrypto.controllers.PathInputController"
+>
+    <Label fx:id="pathLabel" text="Path input" />
+    <HBox spacing="10.0">
+        <TextField fx:id="pathTextField" disable="true" promptText="Select output path..." HBox.hgrow="ALWAYS" />
+        <Button mnemonicParsing="false" prefWidth="50.0" text="Select" onAction="#choosePath" />
+    </HBox>
+</VBox>

@@ -5,10 +5,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
 public class EncryptionSettingsController {
 
     @FXML
     private AlgorithmSettingsController algorithmSettingsController;
 
+    @FXML
+    private PathInputController pathInputController;
+
+    @FXML
+    private FileNameInputController fileNameInputController;
 }
