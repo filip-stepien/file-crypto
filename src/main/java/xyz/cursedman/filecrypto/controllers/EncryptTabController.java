@@ -1,11 +1,8 @@
 package xyz.cursedman.filecrypto.controllers;
 
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import xyz.cursedman.filecrypto.cryptors.Cryptor;
 import xyz.cursedman.filecrypto.cryptors.CryptorKey;
@@ -15,7 +12,7 @@ import xyz.cursedman.filecrypto.utils.Popup;
 import xyz.cursedman.filecrypto.utils.Stopwatch;
 import xyz.cursedman.filecrypto.utils.TimeFormatter;
 
-import java.awt.*;
+import java.awt.Desktop;
 import java.io.*;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -91,7 +88,6 @@ public class EncryptTabController {
         );
     }
 
-
     private void createEncryptedOutputFile() {
         if (fileTableController.getFiles().isEmpty()) {
             return;
@@ -118,15 +114,15 @@ public class EncryptTabController {
             return;
         }
 
+        String fileExtension = ".encrypted.zip";
+        String fullOutputFileName = outputPath.resolve(fileName + fileExtension).toString();
+
         AlgorithmSettingsController algorithmSettingsController =
             encryptionSettingsController.getAlgorithmSettingsController();
 
         KeyCreator keyCreator = algorithmSettingsController.getKeyCreator();
         CryptorKey key = keyCreator.createKey(algorithmSettingsController.getFieldValues());
         Cryptor cryptor = keyCreator.createCryptor(key);
-
-        String fileExtension = ".encrypted.zip";
-        String fullOutputFileName = outputPath.resolve(fileName + fileExtension).toString();
         Stopwatch stopwatch = new Stopwatch();
 
         stopwatch.start();

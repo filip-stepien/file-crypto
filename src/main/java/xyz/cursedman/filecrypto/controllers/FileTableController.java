@@ -14,6 +14,7 @@ import javafx.stage.FileChooser;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.*;
 
 public class FileTableController {
@@ -49,7 +50,7 @@ public class FileTableController {
 
         String itemsCountText = itemsCount + (itemsCount == 1 ? " item" : " items");
         String selectedItemsCountText =
-                selectedItemsCount > 0 ? "(" + selectedItemsCount + " selected)" : "";
+            selectedItemsCount > 0 ? "(" + selectedItemsCount + " selected)" : "";
 
         itemsCounter.setText(itemsCountText + " " + selectedItemsCountText);
     }
@@ -61,8 +62,8 @@ public class FileTableController {
 
     private void addFiles(List<File> files) {
         List<File> newFiles = files.stream()
-                .filter(fileSet::add)
-                .toList();
+            .filter(fileSet::add)
+            .toList();
 
         if (!newFiles.isEmpty()) {
             fileList.addAll(newFiles);
@@ -162,14 +163,14 @@ public class FileTableController {
         fileIconColumn.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(File file, boolean empty) {
-                super.updateItem(file, empty);
-                if (empty || file == null) {
-                    setGraphic(null);
-                } else {
-                    FontIcon icon = new FontIcon(file.isDirectory() ? "fas-folder" : "far-file");
-                    icon.setIconSize(12);
-                    setGraphic(icon);
-                }
+            super.updateItem(file, empty);
+            if (empty || file == null) {
+                setGraphic(null);
+            } else {
+                FontIcon icon = new FontIcon(file.isDirectory() ? "fas-folder" : "far-file");
+                icon.setIconSize(12);
+                setGraphic(icon);
+            }
             }
         });
 
@@ -198,7 +199,10 @@ public class FileTableController {
         directoryChooser.setTitle("Select folders...");
 
         File selectedFolder = directoryChooser.showDialog(fileTableView.getScene().getWindow());
-        addFiles(List.of(selectedFolder));
+
+        if (selectedFolder != null) {
+            addFiles(List.of(selectedFolder));
+        }
     }
 
     @FXML
@@ -207,7 +211,10 @@ public class FileTableController {
         fileChooser.setTitle("Select files...");
 
         List<File> selectedFiles = fileChooser.showOpenMultipleDialog(fileTableView.getScene().getWindow());
-        addFiles(selectedFiles);
+
+        if (selectedFiles != null && !selectedFiles.isEmpty()) {
+            addFiles(selectedFiles);
+        }
     }
 
     @FXML
