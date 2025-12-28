@@ -30,23 +30,19 @@ public class EncryptTabController {
     @FXML
     private EncryptionSettingsController encryptionSettingsController;
 
-    private InputStream zipToInputStream(Collection<File> files, Cryptor cryptor) {
+    private InputStream zipToInputStream(Collection<File> files, Cryptor cryptor) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream);
 
-        try (ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream)) {
-            for (File file : files) {
-                ZipEntry zipEntry = new ZipEntry(file.getName());
-                zipOutputStream.putNextEntry(zipEntry);
+        for (File file : files) {
+            ZipEntry zipEntry = new ZipEntry(file.getName());
+            zipOutputStream.putNextEntry(zipEntry);
 
-                try (InputStream fileInputStream = new FileInputStream(file)) {
-                    cryptor.encrypt(fileInputStream, zipOutputStream);
-                }
-
-                zipOutputStream.closeEntry();
+            try (InputStream fileInputStream = new FileInputStream(file)) {
+                cryptor.encrypt(fileInputStream, zipOutputStream);
             }
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            zipOutputStream.closeEntry();
         }
 
         return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
@@ -133,6 +129,23 @@ public class EncryptTabController {
         ) {
             zipStream.transferTo(out);
         } catch (IOException e) {
+            Popup.error(
+                "Encryption error",
+                "An error occurred while encrypting files",
+                new VBox(
+                    5,
+                    new Label("Error log:"),
+                    new Label(e.getMessage()) {{
+                        setStyle(
+                            "-fx-font-family: 'Monospaced';" +
+                            "-fx-background-color: #f0f0f0;" +
+                            "-fx-border-color: #cccccc;" +
+                            "-fx-padding: 4 6 4 6;"
+                        );
+                    }}
+                )
+            );
+
             throw new RuntimeException(e);
         }
 
