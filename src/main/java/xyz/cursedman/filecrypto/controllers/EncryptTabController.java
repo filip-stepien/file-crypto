@@ -1,11 +1,21 @@
 package xyz.cursedman.filecrypto.controllers;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import xyz.cursedman.filecrypto.cryptors.Cryptor;
 import xyz.cursedman.filecrypto.cryptors.CryptorKey;
 import xyz.cursedman.filecrypto.keys.KeyCreator;
+import xyz.cursedman.filecrypto.utils.FileSizeFormatter;
+import xyz.cursedman.filecrypto.utils.Popup;
+import xyz.cursedman.filecrypto.utils.Stopwatch;
+import xyz.cursedman.filecrypto.utils.TimeFormatter;
 
+import java.awt.*;
 import java.io.*;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -45,8 +55,66 @@ public class EncryptTabController {
         return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
     }
 
-    private void encryptFiles(String filePath) {
+    private void showEncryptionFinishedPopup(String filePath, long timeTakenMs, long fileSizeBytes) {
+        VBox popupContent = new VBox(
+            5,
+            new VBox(
+                5,
+                new Label("Output file:") {{ setStyle("-fx-font-weight: bold;"); }},
+                new Label(TimeFormatter.format(timeTakenMs))
+            ),
+            new VBox(
+                5,
+                new Label("File size:") {{ setStyle("-fx-font-weight: bold;"); }},
+                new Label(FileSizeFormatter.format(fileSizeBytes))
+            ),
+            new VBox(
+                5,
+                new Label("Output path:") {{ setStyle("-fx-font-weight: bold;"); }},
+                new Hyperlink(filePath) {{
+                    setStyle("-fx-padding: 0; -fx-border-width: 0;");
+                    setOnAction(e -> {
+                        try {
+                            Desktop.getDesktop().open(new File(filePath).getParentFile());
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    });
+                }}
+            )
+        );
+
+        Popup.info(
+            "Encryption completed",
+            "Files were encrypted successfully",
+            popupContent
+        );
+    }
+
+
+    private void createEncryptedOutputFile() {
         if (fileTableController.getFiles().isEmpty()) {
+            return;
+        }
+
+        Path outputPath = encryptionSettingsController.getPathInputController().getPath();
+        String fileName = encryptionSettingsController.getFileNameInputController().getFileName();
+
+        if (outputPath == null) {
+            Popup.error(
+                "Output path missing",
+                "Output path is missing",
+                "Please select a directory to save the encrypted file."
+            );
+            return;
+        }
+
+        if (fileName == null || fileName.isBlank()) {
+            Popup.error(
+                "File name missing",
+                "File name is missing",
+                "Please enter a valid name for the output file."
+            );
             return;
         }
 
@@ -57,42 +125,31 @@ public class EncryptTabController {
         CryptorKey key = keyCreator.createKey(algorithmSettingsController.getFieldValues());
         Cryptor cryptor = keyCreator.createCryptor(key);
 
+        String fileExtension = ".encrypted.zip";
+        String fullOutputFileName = outputPath.resolve(fileName + fileExtension).toString();
+        Stopwatch stopwatch = new Stopwatch();
+
+        stopwatch.start();
+
         try (
             InputStream zipStream = zipToInputStream(fileTableController.getFiles(), cryptor);
-            OutputStream out = new FileOutputStream(filePath)
+            OutputStream out = new FileOutputStream(fullOutputFileName)
         ) {
             zipStream.transferTo(out);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
 
+        stopwatch.stop();
 
-    private void createEncryptedOutputFile() {
-        String fileExtension = ".encrypted.zip";
-        Path outputPath = encryptionSettingsController.getPathInputController().getPath();
-        String fileName = encryptionSettingsController.getFileNameInputController().getFileName();
+        long timeTakenMs = stopwatch.getElapsedMillis();
+        long outputFileSizeBytes = new File(fullOutputFileName).length();
 
-        if (outputPath == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Output path missing");
-            alert.setHeaderText("Output path is missing");
-            alert.setContentText("Please select a directory to save the encrypted file.");
-            alert.showAndWait();
-            return;
-        }
-
-        if (fileName == null || fileName.isBlank()) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("File name missing");
-            alert.setHeaderText("File name is missing");
-            alert.setContentText("Please enter a valid name for the output file.");
-            alert.showAndWait();
-            return;
-        }
-
-        String fullOutputFileName = outputPath.resolve(fileName + fileExtension).toString();
-        encryptFiles(fullOutputFileName);
+        showEncryptionFinishedPopup(
+            fullOutputFileName,
+            timeTakenMs,
+            outputFileSizeBytes
+        );
     }
 
     @FXML
