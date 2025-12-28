@@ -22,12 +22,8 @@ public class ProgressBarController {
         button.setText(text);
     }
 
-    public void setProgress(double value) {
-        progressBar.setProgress(value);
-    }
-
-    public void setProgressBarLabel(String text) {
-        progressBarLabel.setText(text);
+    public void setLoading(boolean loading) {
+        progressBar.setProgress(loading ? ProgressBar.INDETERMINATE_PROGRESS : 0);
     }
 
     public void setOnButtonClick(EventHandler<ActionEvent> handler) {

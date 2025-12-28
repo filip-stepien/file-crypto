@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<StackPane
+    xmlns="http://javafx.com/javafx"
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="xyz.cursedman.filecrypto.controllers.LoadingOverlayController"
+    fx:id="loadingOverlay"
+    visible="false"
+    style="-fx-background-color: rgb(255, 255, 255, 0.5)"
+/>

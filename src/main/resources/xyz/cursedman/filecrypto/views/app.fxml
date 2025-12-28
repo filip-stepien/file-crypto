@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 
-<VBox
-    xmlns="http://javafx.com/javafx/17.0.12"
-    xmlns:fx="http://javafx.com/fxml/1"
->
-    <TabPane tabClosingPolicy="UNAVAILABLE">
-        <fx:include source="encrypt-tab.fxml" />
-        <fx:include source="decrypt-tab.fxml" />
-    </TabPane>
-</VBox>
+<TabPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" tabClosingPolicy="UNAVAILABLE">
+    <fx:include source="encrypt-tab.fxml" />
+    <fx:include source="decrypt-tab.fxml" />
+</TabPane>

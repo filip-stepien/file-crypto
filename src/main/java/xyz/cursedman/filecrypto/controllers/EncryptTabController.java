@@ -1,9 +1,12 @@
 package xyz.cursedman.filecrypto.controllers;
 
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import xyz.cursedman.filecrypto.App;
 import xyz.cursedman.filecrypto.cryptors.Cryptor;
 import xyz.cursedman.filecrypto.cryptors.CryptorKey;
 import xyz.cursedman.filecrypto.keys.KeyCreator;
@@ -16,6 +19,7 @@ import java.awt.Desktop;
 import java.io.*;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -29,6 +33,14 @@ public class EncryptTabController {
 
     @FXML
     private EncryptionSettingsController encryptionSettingsController;
+
+    @FXML
+    public LoadingOverlayController loadingOverlayController;
+
+    private void setLoading(boolean loading) {
+        progressBarController.setLoading(loading);
+        loadingOverlayController.setVisible(loading);
+    }
 
     private InputStream zipToInputStream(Collection<File> files, Cryptor cryptor) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -53,7 +65,7 @@ public class EncryptTabController {
             5,
             new VBox(
                 5,
-                new Label("Output file:") {{ setStyle("-fx-font-weight: bold;"); }},
+                new Label("Time taken:") {{ setStyle("-fx-font-weight: bold;"); }},
                 new Label(TimeFormatter.format(timeTakenMs))
             ),
             new VBox(
@@ -82,6 +94,67 @@ public class EncryptTabController {
             "Files were encrypted successfully",
             popupContent
         );
+
+        App.reload();
+    }
+
+    private Task<Void> getEncryptionTask(Cryptor cryptor, String fullOutputFileName) {
+        Stopwatch stopwatch = new Stopwatch();
+
+        return new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                stopwatch.start();
+
+                try (
+                    InputStream zipStream = zipToInputStream(fileTableController.getFiles(), cryptor);
+                    OutputStream out = new FileOutputStream(fullOutputFileName)
+                ) {
+                    zipStream.transferTo(out);
+                }
+
+                stopwatch.stop();
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                setLoading(false);
+
+                long timeTakenMs = stopwatch.getElapsedMillis();
+                long outputFileSizeBytes = new File(fullOutputFileName).length();
+
+                showEncryptionFinishedPopup(
+                    fullOutputFileName,
+                    timeTakenMs,
+                    outputFileSizeBytes
+                );
+            }
+
+            @Override
+            protected void failed() {
+                super.failed();
+                setLoading(false);
+
+                Popup.error(
+                    "Encryption error",
+                    "An error occurred while encrypting files",
+                    new VBox(
+                        5,
+                        new Label("Error log:"),
+                        new Label(getException().getMessage()) {{
+                            setStyle(
+                                "-fx-font-family: 'Monospaced';" +
+                                "-fx-background-color: #f0f0f0;" +
+                                "-fx-border-color: #cccccc;" +
+                                "-fx-padding: 4 6 4 6;"
+                            );
+                        }}
+                    )
+                );
+            }
+        };
     }
 
     private void createEncryptedOutputFile() {
@@ -119,46 +192,14 @@ public class EncryptTabController {
         KeyCreator keyCreator = algorithmSettingsController.getKeyCreator();
         CryptorKey key = keyCreator.createKey(algorithmSettingsController.getFieldValues());
         Cryptor cryptor = keyCreator.createCryptor(key);
-        Stopwatch stopwatch = new Stopwatch();
 
-        stopwatch.start();
+        Task<Void> task = getEncryptionTask(cryptor, fullOutputFileName);
+        Thread thread = new Thread(task);
 
-        try (
-            InputStream zipStream = zipToInputStream(fileTableController.getFiles(), cryptor);
-            OutputStream out = new FileOutputStream(fullOutputFileName)
-        ) {
-            zipStream.transferTo(out);
-        } catch (IOException e) {
-            Popup.error(
-                "Encryption error",
-                "An error occurred while encrypting files",
-                new VBox(
-                    5,
-                    new Label("Error log:"),
-                    new Label(e.getMessage()) {{
-                        setStyle(
-                            "-fx-font-family: 'Monospaced';" +
-                            "-fx-background-color: #f0f0f0;" +
-                            "-fx-border-color: #cccccc;" +
-                            "-fx-padding: 4 6 4 6;"
-                        );
-                    }}
-                )
-            );
+        thread.setDaemon(true);
+        thread.start();
 
-            throw new RuntimeException(e);
-        }
-
-        stopwatch.stop();
-
-        long timeTakenMs = stopwatch.getElapsedMillis();
-        long outputFileSizeBytes = new File(fullOutputFileName).length();
-
-        showEncryptionFinishedPopup(
-            fullOutputFileName,
-            timeTakenMs,
-            outputFileSizeBytes
-        );
+        setLoading(true);
     }
 
     @FXML
