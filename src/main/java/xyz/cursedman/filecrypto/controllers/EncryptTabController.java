@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox;
 import xyz.cursedman.filecrypto.App;
 import xyz.cursedman.filecrypto.cryptors.Cryptor;
 import xyz.cursedman.filecrypto.cryptors.CryptorKey;
+import xyz.cursedman.filecrypto.cryptors.HeaderCryptor;
 import xyz.cursedman.filecrypto.keys.KeyCreator;
 import xyz.cursedman.filecrypto.utils.FileSizeFormatter;
 import xyz.cursedman.filecrypto.utils.Popup;
@@ -191,7 +192,7 @@ public class EncryptTabController {
 
         KeyCreator keyCreator = algorithmSettingsController.getKeyCreator();
         CryptorKey key = keyCreator.createKey(algorithmSettingsController.getFieldValues());
-        Cryptor cryptor = keyCreator.createCryptor(key);
+        Cryptor cryptor = new HeaderCryptor(keyCreator.createCryptor(key));
 
         Task<Void> task = getEncryptionTask(cryptor, fullOutputFileName);
         Thread thread = new Thread(task);

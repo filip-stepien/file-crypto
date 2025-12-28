@@ -2,6 +2,7 @@ package xyz.cursedman.filecrypto.cryptors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
@@ -9,14 +10,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-@SuppressWarnings("unused")
 @Getter
 @Setter
-@AllArgsConstructor
 @SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
 public abstract class Cryptor {
 
-    final private CryptorKey key;
+    private CryptorKey key;
 
     public abstract void encrypt(InputStream in, OutputStream out) throws IOException;
 
