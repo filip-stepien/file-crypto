@@ -1,6 +1,9 @@
 package xyz.cursedman.filecrypto.controllers;
 
 import javafx.fxml.FXML;
+import xyz.cursedman.filecrypto.cryptors.CryptorAlgorithm;
+import xyz.cursedman.filecrypto.cryptors.HeaderCryptor;
+import xyz.cursedman.filecrypto.keys.KeyCreator;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,12 +22,16 @@ public class DecryptTabController {
     private void createDecryptedOutputFile() {
         Path inputPath = decryptionSettingsController.getInputFilePathController().getPath();
         Path outputPath = decryptionSettingsController.getOutputFilePathController().getPath();
+        String keyString = decryptionSettingsController.getKeyInput().getText();
 
         try (
             InputStream inputStream = Files.newInputStream(inputPath);
             OutputStream outputStream = Files.newOutputStream(outputPath)
         ) {
-            
+            HeaderCryptor.Header header = HeaderCryptor.readHeader(inputStream);
+            CryptorAlgorithm algorithm = CryptorAlgorithm.fromAlgorithmName(header.algorithmName());
+            KeyCreator keyCreator = CryptorAlgorithm.getKeyCreator(algorithm);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -33,8 +40,6 @@ public class DecryptTabController {
     @FXML
     void initialize() {
         progressBarController.setButtonText("Decrypt");
-        progressBarController.setOnButtonClick(event -> {
-            createDecryptedOutputFile();
-        });
+        progressBarController.setOnButtonClick(event -> createDecryptedOutputFile());
     }
 }

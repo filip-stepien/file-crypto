@@ -8,28 +8,16 @@ import xyz.cursedman.filecrypto.controls.FieldControl;
 import xyz.cursedman.filecrypto.controls.FieldInfo;
 import xyz.cursedman.filecrypto.controls.NumberControl;
 import xyz.cursedman.filecrypto.controls.TextControl;
-import xyz.cursedman.filecrypto.cryptors.AESCryptor.AESCryptor;
-import xyz.cursedman.filecrypto.cryptors.CaesarCryptor.CaesarCryptor;
 import xyz.cursedman.filecrypto.cryptors.CryptorAlgorithm;
-import xyz.cursedman.filecrypto.cryptors.XorCryptor.XorCryptor;
 import xyz.cursedman.filecrypto.keys.KeyCreator;
 import xyz.cursedman.filecrypto.keys.KeyInputField;
-import xyz.cursedman.filecrypto.keys.impl.AESKeyCreator;
-import xyz.cursedman.filecrypto.keys.impl.CaesarKeyCreator;
-import xyz.cursedman.filecrypto.keys.impl.XorKeyCreator;
 
 import java.util.*;
 
 public class AlgorithmSettingsController {
 
-    private final Map<CryptorAlgorithm, KeyCreator> availableAlgorithms = Map.of(
-        CryptorAlgorithm.CAESAR, new CaesarKeyCreator(),
-        CryptorAlgorithm.XOR, new XorKeyCreator(),
-        CryptorAlgorithm.AES, new AESKeyCreator()
-    );
-
     @Getter
-    private KeyCreator keyCreator = availableAlgorithms.get(CryptorAlgorithm.CAESAR);
+    private KeyCreator keyCreator = CryptorAlgorithm.getKeyCreator(CryptorAlgorithm.CAESAR);
 
     @FXML
     private ComboBox<String> algorithmComboBox;
@@ -42,7 +30,9 @@ public class AlgorithmSettingsController {
     @FXML
     private void initialize() {
         algorithmComboBox.getItems().addAll(
-            availableAlgorithms.keySet().stream().map(CryptorAlgorithm::getAlgorithmName).toList()
+            Arrays.stream(CryptorAlgorithm.values())
+                .map(CryptorAlgorithm::getAlgorithmName)
+                .toList()
         );
 
         algorithmComboBox.getSelectionModel()
@@ -56,10 +46,8 @@ public class AlgorithmSettingsController {
     }
 
     private void selectAlgorithm(CryptorAlgorithm algorithm) {
-        if (availableAlgorithms.containsKey(algorithm)) {
-            algorithmComboBox.getSelectionModel().select(algorithm.getAlgorithmName());
-            setKeyCreator(availableAlgorithms.get(algorithm));
-        }
+        algorithmComboBox.getSelectionModel().select(algorithm.getAlgorithmName());
+        setKeyCreator(CryptorAlgorithm.getKeyCreator(algorithm));
     }
 
     private FieldInfo resolveField(KeyInputField field) {
@@ -69,14 +57,13 @@ public class AlgorithmSettingsController {
 
         switch (field.getType()) {
             case TEXT, HEX -> fieldInfo.fieldControl(
-                    new TextControl(field.getDefaultValue(), field.getPlaceholder())
+                new TextControl(field.getDefaultValue(), field.getPlaceholder())
             );
             case NUMBER -> fieldInfo.fieldControl(
-                    new NumberControl(field.getDefaultValue(), field.getPlaceholder())
+                new NumberControl(field.getDefaultValue(), field.getPlaceholder())
             );
             default -> throw new RuntimeException("Unsupported key input type type: " + field.getType());
         }
-        ;
 
         return fieldInfo.build();
     }

@@ -4,43 +4,66 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import xyz.cursedman.filecrypto.exceptions.InvalidEncryptedHeaderException;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 @RequiredArgsConstructor
 public class HeaderCryptor extends Cryptor {
 
+    public record Header(String algorithmName) {}
+
     private final Cryptor cryptor;
 
-    @Getter
-    private static final String magicString = "FILE-CRYPTO";
+    private static final String MAGIC_STRING = "FILE-CRYPTO";
 
-    @Getter
-    private static final byte[] magicBytes = magicString.getBytes(StandardCharsets.UTF_8);
+    private static final byte[] MAGIC_BYTES = MAGIC_STRING.getBytes(StandardCharsets.UTF_8);
 
-    public void getHeader() {
+    private void writeHeader(OutputStream out) throws IOException {
+        byte[] algorithmNameBytes =
+            cryptor.getAlgorithmName().toString().getBytes(StandardCharsets.UTF_8);
+
+        DataOutputStream dataOut = new DataOutputStream(out);
+
+        dataOut.write(MAGIC_BYTES);
+        dataOut.writeInt(algorithmNameBytes.length);
+        dataOut.write(algorithmNameBytes);
+        dataOut.flush();
+    }
+
+    public static Header readHeader(InputStream in) throws IOException {
+        DataInputStream dataIn = new DataInputStream(in);
+
+        byte[] actualMagic = new byte[MAGIC_BYTES.length];
+        dataIn.readFully(actualMagic);
+
+        if (!Arrays.equals(MAGIC_BYTES, actualMagic)) {
+            throw new InvalidEncryptedHeaderException("Invalid magic header");
+        }
+
+        int algorithmNameLength = dataIn.readInt();
+        if (algorithmNameLength <= 0 || algorithmNameLength > CryptorAlgorithm.MAX_ALGORITHM_NAME_LENGTH) {
+            throw new InvalidEncryptedHeaderException("Invalid algorithm name length");
+        }
+
+        byte[] algorithmNameBytes = new byte[algorithmNameLength];
+        dataIn.readFully(algorithmNameBytes);
+
+        String algorithmName = new String(algorithmNameBytes, StandardCharsets.UTF_8);
+
+        return new Header(algorithmName);
     }
 
     @Override
     public void encrypt(InputStream in, OutputStream out) throws IOException {
-        out.write(magicBytes);
-        out.flush();
+        writeHeader(out);
         cryptor.encrypt(in, out);
     }
 
     @Override
     public void decrypt(InputStream in, OutputStream out) throws IOException {
-        byte[] actualHeader = new byte[magicBytes.length];
-        int read = in.read(actualHeader);
-
-        if (read != magicBytes.length || !Arrays.equals(magicBytes, actualHeader)) {
-            throw new InvalidEncryptedHeaderException();
-        }
-
         cryptor.decrypt(in, out);
     }
 }
+
 

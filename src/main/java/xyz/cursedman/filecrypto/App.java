@@ -58,10 +58,6 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
-        Cryptor cryptor = CaesarCryptor.builder().build();
-        HeaderCryptor headerCryptor = new HeaderCryptor(cryptor);
-        headerCryptor.getHeader();
-
         launch();
     }
 }
