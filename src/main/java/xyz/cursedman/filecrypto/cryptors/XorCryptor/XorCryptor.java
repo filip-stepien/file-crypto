@@ -2,6 +2,7 @@ package xyz.cursedman.filecrypto.cryptors.XorCryptor;
 
 import lombok.experimental.SuperBuilder;
 import xyz.cursedman.filecrypto.cryptors.Cryptor;
+import xyz.cursedman.filecrypto.cryptors.CryptorAlgorithm;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +10,11 @@ import java.io.OutputStream;
 
 @SuperBuilder
 public class XorCryptor extends Cryptor {
+
+    @Override
+    public CryptorAlgorithm getAlgorithmName() {
+        return CryptorAlgorithm.XOR;
+    }
 
     @Override
     public void encrypt(InputStream in, OutputStream out) throws IOException {

@@ -23,10 +23,6 @@ public class AESKeyCreator implements KeyCreator {
             128, 192, 256
     );
 
-    public static String getAlgorithmName() {
-        return "AES";
-    }
-
     @Override
     public List<KeyInputField> getKeyInputFields() {
         return List.of(

@@ -3,6 +3,7 @@ package xyz.cursedman.filecrypto.cryptors.CaesarCryptor;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import xyz.cursedman.filecrypto.cryptors.Cryptor;
+import xyz.cursedman.filecrypto.cryptors.CryptorAlgorithm;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +11,11 @@ import java.io.OutputStream;
 
 @SuperBuilder
 public class CaesarCryptor extends Cryptor {
+
+    @Override
+    public CryptorAlgorithm getAlgorithmName() {
+        return CryptorAlgorithm.CAESAR;
+    }
 
     @Override
     public void encrypt(InputStream in, OutputStream out) throws IOException {

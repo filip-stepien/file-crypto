@@ -3,15 +3,15 @@ package xyz.cursedman.filecrypto.controllers;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.VBox;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import xyz.cursedman.filecrypto.controls.FieldControl;
 import xyz.cursedman.filecrypto.controls.FieldInfo;
 import xyz.cursedman.filecrypto.controls.NumberControl;
 import xyz.cursedman.filecrypto.controls.TextControl;
+import xyz.cursedman.filecrypto.cryptors.AESCryptor.AESCryptor;
 import xyz.cursedman.filecrypto.cryptors.CaesarCryptor.CaesarCryptor;
-import xyz.cursedman.filecrypto.cryptors.Cryptor;
+import xyz.cursedman.filecrypto.cryptors.CryptorAlgorithm;
+import xyz.cursedman.filecrypto.cryptors.XorCryptor.XorCryptor;
 import xyz.cursedman.filecrypto.keys.KeyCreator;
 import xyz.cursedman.filecrypto.keys.KeyInputField;
 import xyz.cursedman.filecrypto.keys.impl.AESKeyCreator;
@@ -22,14 +22,14 @@ import java.util.*;
 
 public class AlgorithmSettingsController {
 
-    private final Map<String, KeyCreator> availableAlgorithms = Map.of(
-        CaesarKeyCreator.getAlgorithmName(), new CaesarKeyCreator(),
-        XorKeyCreator.getAlgorithmName(), new XorKeyCreator(),
-        AESKeyCreator.getAlgorithmName(), new AESKeyCreator()
+    private final Map<CryptorAlgorithm, KeyCreator> availableAlgorithms = Map.of(
+        CryptorAlgorithm.CAESAR, new CaesarKeyCreator(),
+        CryptorAlgorithm.XOR, new XorKeyCreator(),
+        CryptorAlgorithm.AES, new AESKeyCreator()
     );
 
     @Getter
-    private KeyCreator keyCreator = availableAlgorithms.get(CaesarKeyCreator.getAlgorithmName());
+    private KeyCreator keyCreator = availableAlgorithms.get(CryptorAlgorithm.CAESAR);
 
     @FXML
     private ComboBox<String> algorithmComboBox;
@@ -41,21 +41,24 @@ public class AlgorithmSettingsController {
 
     @FXML
     private void initialize() {
-        algorithmComboBox.getItems().addAll(availableAlgorithms.keySet());
+        algorithmComboBox.getItems().addAll(
+            availableAlgorithms.keySet().stream().map(CryptorAlgorithm::getAlgorithmName).toList()
+        );
+
         algorithmComboBox.getSelectionModel()
             .selectedItemProperty()
             .addListener((obs, prev, curr) -> {
-                selectAlgorithm(curr);
+                selectAlgorithm(CryptorAlgorithm.fromAlgorithmName(curr));
             }
         );
 
-        selectAlgorithm(CaesarKeyCreator.getAlgorithmName());
+        selectAlgorithm(CryptorAlgorithm.CAESAR);
     }
 
-    private void selectAlgorithm(String algorithmName) {
-        if (availableAlgorithms.containsKey(algorithmName)) {
-            algorithmComboBox.getSelectionModel().select(algorithmName);
-            setKeyCreator(availableAlgorithms.get(algorithmName));
+    private void selectAlgorithm(CryptorAlgorithm algorithm) {
+        if (availableAlgorithms.containsKey(algorithm)) {
+            algorithmComboBox.getSelectionModel().select(algorithm.getAlgorithmName());
+            setKeyCreator(availableAlgorithms.get(algorithm));
         }
     }
 

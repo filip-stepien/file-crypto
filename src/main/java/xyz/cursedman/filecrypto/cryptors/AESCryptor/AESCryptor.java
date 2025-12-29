@@ -1,6 +1,7 @@
 package xyz.cursedman.filecrypto.cryptors.AESCryptor;
 
 import xyz.cursedman.filecrypto.cryptors.Cryptor;
+import xyz.cursedman.filecrypto.cryptors.CryptorAlgorithm;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -20,6 +21,11 @@ public class AESCryptor extends Cryptor {
 
     public AESCryptor(AESCryptorKey key) {
         super(key);
+    }
+
+    @Override
+    public CryptorAlgorithm getAlgorithmName() {
+        return CryptorAlgorithm.AES;
     }
 
     @Override

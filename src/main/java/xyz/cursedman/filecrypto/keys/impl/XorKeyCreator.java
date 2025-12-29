@@ -18,10 +18,6 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class XorKeyCreator implements KeyCreator {
 
-    public static String getAlgorithmName() {
-        return "Xor cipher";
-    }
-
     @Override
     public List<KeyInputField> getKeyInputFields() {
         return List.of(

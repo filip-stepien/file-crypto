@@ -2,27 +2,26 @@ package xyz.cursedman.filecrypto.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import lombok.Getter;
 
+@Getter
 public class DecryptionSettingsController {
 
     @FXML
-    private PasswordInputController passwordInputController;
+    private TextField keyInput;
 
     @FXML
-    private TextField encryptedFilePathField;
+    private PathInputController inputFilePathController;
 
     @FXML
-    private TextField outputFilePathField;
+    private PathInputController outputFilePathController;
 
-    public String getEncryptedFilePath() {
-        return encryptedFilePathField.getText();
-    }
-
-    public String getOutputFilePath() {
-        return outputFilePathField.getText();
-    }
-
-    public String getPassword() {
-        return passwordInputController.getPassword();
+    @FXML
+    void initialize() {
+        outputFilePathController.setLabel("Output path");
+        inputFilePathController.setLabel("Encrypted file path");
+        inputFilePathController.setOnPathSelected(path -> {
+            outputFilePathController.setPath(path);
+        });
     }
 }

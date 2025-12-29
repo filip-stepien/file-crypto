@@ -8,10 +8,6 @@ import java.util.Map;
 
 public interface KeyCreator {
 
-    static String getAlgorithmName() {
-        return null;
-    }
-
     Collection<KeyInputField> getKeyInputFields();
 
     /*

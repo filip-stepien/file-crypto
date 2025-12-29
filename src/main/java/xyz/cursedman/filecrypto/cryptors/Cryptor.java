@@ -19,6 +19,10 @@ public abstract class Cryptor {
 
     private CryptorKey key;
 
+    public CryptorAlgorithm getAlgorithmName() {
+        return null;
+    }
+
     public abstract void encrypt(InputStream in, OutputStream out) throws IOException;
 
     public abstract void decrypt(InputStream in, OutputStream out) throws IOException;

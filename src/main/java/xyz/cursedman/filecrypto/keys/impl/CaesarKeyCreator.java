@@ -18,10 +18,6 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class CaesarKeyCreator implements KeyCreator {
 
-    public static String getAlgorithmName() {
-        return "Caesar Cipher";
-    }
-
     @Override
     public Collection<KeyInputField> getKeyInputFields() {
         return List.of(

@@ -19,19 +19,10 @@
         </Label>
         <Separator prefWidth="200.0"/>
     </VBox>
+    <fx:include fx:id="inputFilePath" source="path-input.fxml" />
+    <fx:include fx:id="outputFilePath" source="path-input.fxml" />
     <VBox spacing="5.0">
-        <Label text="Encrypted file"/>
-        <HBox alignment="CENTER_LEFT" spacing="10.0">
-            <TextField fx:id="encryptedFilePathField" editable="false" promptText="Select or drag a file here..." HBox.hgrow="ALWAYS"/>
-            <Button mnemonicParsing="false" prefWidth="50.0" text="Select"/>
-        </HBox>
+        <Label text="Secret key" />
+        <TextField fx:id="keyInput" promptText="Enter secret key..." />
     </VBox>
-    <VBox spacing="5.0">
-        <Label text="Output path"/>
-        <HBox alignment="CENTER_LEFT" spacing="10.0">
-            <TextField fx:id="outputFilePathField" editable="false" promptText="Select path..." HBox.hgrow="ALWAYS" />
-            <Button mnemonicParsing="false" prefWidth="50.0" text="Select"/>
-        </HBox>
-    </VBox>
-    <fx:include fx:id="passwordInput" source="password-input.fxml"/>
 </VBox>

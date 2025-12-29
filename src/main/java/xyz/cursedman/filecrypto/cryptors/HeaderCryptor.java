@@ -16,24 +16,27 @@ public class HeaderCryptor extends Cryptor {
     private final Cryptor cryptor;
 
     @Getter
-    private static final String headerString = "FILE-CRYPTO";
+    private static final String magicString = "FILE-CRYPTO";
 
     @Getter
-    private static final byte[] headerBytes = headerString.getBytes(StandardCharsets.UTF_8);
+    private static final byte[] magicBytes = magicString.getBytes(StandardCharsets.UTF_8);
+
+    public void getHeader() {
+    }
 
     @Override
     public void encrypt(InputStream in, OutputStream out) throws IOException {
-        out.write(headerBytes);
+        out.write(magicBytes);
         out.flush();
         cryptor.encrypt(in, out);
     }
 
     @Override
     public void decrypt(InputStream in, OutputStream out) throws IOException {
-        byte[] actualHeader = new byte[headerBytes.length];
+        byte[] actualHeader = new byte[magicBytes.length];
         int read = in.read(actualHeader);
 
-        if (read != headerBytes.length || !Arrays.equals(headerBytes, actualHeader)) {
+        if (read != magicBytes.length || !Arrays.equals(magicBytes, actualHeader)) {
             throw new InvalidEncryptedHeaderException();
         }
 

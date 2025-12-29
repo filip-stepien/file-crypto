@@ -12,6 +12,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import xyz.cursedman.filecrypto.controllers.FileTableController;
+import xyz.cursedman.filecrypto.cryptors.AESCryptor.AESCryptor;
+import xyz.cursedman.filecrypto.cryptors.AESCryptor.AESCryptorKey;
+import xyz.cursedman.filecrypto.cryptors.CaesarCryptor.CaesarCryptor;
+import xyz.cursedman.filecrypto.cryptors.Cryptor;
+import xyz.cursedman.filecrypto.cryptors.HeaderCryptor;
 import xyz.cursedman.filecrypto.utils.FileSizeFormatter;
 import xyz.cursedman.filecrypto.utils.Popup;
 import xyz.cursedman.filecrypto.utils.TimeFormatter;
@@ -53,6 +58,10 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
+        Cryptor cryptor = CaesarCryptor.builder().build();
+        HeaderCryptor headerCryptor = new HeaderCryptor(cryptor);
+        headerCryptor.getHeader();
+
         launch();
     }
 }

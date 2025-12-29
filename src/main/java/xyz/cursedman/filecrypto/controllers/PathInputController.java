@@ -12,6 +12,7 @@ import lombok.Setter;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.function.Consumer;
 
 public class PathInputController {
 
@@ -32,6 +33,9 @@ public class PathInputController {
 
     @Getter
     private Path path = null;
+
+    @Setter
+    private Consumer<Path> onPathSelected;
 
     @FXML
     private void choosePath() {
@@ -56,9 +60,18 @@ public class PathInputController {
         Path path = selected.toPath();
         pathTextField.setText(path.toString());
         this.path = path;
+
+        if (onPathSelected != null) {
+            onPathSelected.accept(path);
+        }
     }
 
     public void setLabel(String text) {
         pathLabel.setText(text);
+    }
+
+    public void setPath(Path path) {
+        this.path = path;
+        pathTextField.setText(path.toString());
     }
 }

@@ -11,7 +11,7 @@
 >
     <Label fx:id="pathLabel" text="Path input" />
     <HBox spacing="10.0">
-        <TextField fx:id="pathTextField" disable="true" promptText="Select output path..." HBox.hgrow="ALWAYS" />
+        <TextField fx:id="pathTextField" disable="true" promptText="Select path..." HBox.hgrow="ALWAYS" />
         <Button mnemonicParsing="false" prefWidth="50.0" text="Select" onAction="#choosePath" />
     </HBox>
 </VBox>
