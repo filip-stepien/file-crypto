@@ -20,18 +20,18 @@ import java.util.Map;
 public class AESKeyCreator implements KeyCreator {
 
     static private final List<Integer> allowedKeySizeBits = List.of(
-            128, 192, 256
+        128, 192, 256
     );
 
     @Override
     public List<KeyInputField> getKeyInputFields() {
         return List.of(
-                KeyInputField.builder()
-                        .id("keyHex")
-                        .label("AES Key (Hex)")
-                        .description("Hex characters.")
-                        .type(KeyInputType.HEX)
-                        .build()
+            KeyInputField.builder()
+                .id("keyHex")
+                .label("AES Key (Hex)")
+                .description("Hex characters.")
+                .type(KeyInputType.HEX)
+                .build()
         );
     }
 
@@ -49,6 +49,11 @@ public class AESKeyCreator implements KeyCreator {
     }
 
     @Override
+    public CryptorKey createKey(String keyInput) {
+        return AESCryptorKey.fromBytes(HexFormat.of().parseHex(keyInput));
+    }
+
+    @Override
     public Cryptor createCryptor(CryptorKey key) {
         if (key.getClass() != AESCryptorKey.class) {
             throw new RuntimeException("Invalid key type: " + key.getClass());
@@ -60,17 +65,15 @@ public class AESKeyCreator implements KeyCreator {
     @Override
     public Collection<KeyInputField> getKeyGeneratorFields() {
         return List.of(
-                KeyInputField.builder()
-                        .id("keySizeBits")
-                        .label("key size bits")
-                        .description("Bits of key size in hex format")
-                        .type(KeyInputType.SELECTION)
-                        .defaultValue("256")
-                        .options(
-                                allowedKeySizeBits.stream().map(Object::toString).toList()
-                        )
-                        .placeholder("Bits in key")
-                        .build()
+            KeyInputField.builder()
+                .id("keySizeBits")
+                .label("key size bits")
+                .description("Bits of key size in hex format")
+                .type(KeyInputType.SELECTION)
+                .defaultValue("256")
+                .options(allowedKeySizeBits.stream().map(Object::toString).toList())
+                .placeholder("Bits in key")
+                .build()
         );
     }
 

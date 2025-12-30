@@ -10,4 +10,5 @@ import xyz.cursedman.filecrypto.cryptors.CryptorKey;
 @Builder
 public class XorCryptorKey implements CryptorKey {
     private byte[] key; // can be any length
+
 }

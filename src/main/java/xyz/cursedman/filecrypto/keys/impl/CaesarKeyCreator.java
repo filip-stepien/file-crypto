@@ -21,14 +21,14 @@ public class CaesarKeyCreator implements KeyCreator {
     @Override
     public Collection<KeyInputField> getKeyInputFields() {
         return List.of(
-                KeyInputField.builder()
-                        .id("shift")
-                        .label("shift")
-                        .description("shift")
-                        .type(KeyInputType.NUMBER)
-                        .defaultValue("6")
-                        .placeholder("Enter shift number...")
-                        .build()
+            KeyInputField.builder()
+                .id("shift")
+                .label("shift")
+                .description("shift")
+                .type(KeyInputType.NUMBER)
+                .defaultValue("6")
+                .placeholder("Enter shift number...")
+                .build()
         );
     }
 
@@ -38,8 +38,15 @@ public class CaesarKeyCreator implements KeyCreator {
         int shift = Integer.parseInt(fieldValues.get("shift"));
 
         return CaesarCryptorKey.builder()
-                .shift(shift)
-                .build();
+            .shift(shift)
+            .build();
+    }
+
+    @Override
+    public CryptorKey createKey(String keyInput) {
+        return CaesarCryptorKey.builder()
+            .shift(Integer.parseInt(keyInput))
+            .build();
     }
 
     @Override
@@ -51,10 +58,10 @@ public class CaesarKeyCreator implements KeyCreator {
     public CryptorKey generateCryptorKey(Map<String, String> fieldValues) {
         SecureRandom random = new SecureRandom();
         return createKey(
-                Map.of(
-                        "shift", String.valueOf(
-                                random.nextInt(Byte.MAX_VALUE - Byte.MIN_VALUE + 1))
-                )
+            Map.of(
+                "shift",
+                String.valueOf(random.nextInt(Byte.MAX_VALUE - Byte.MIN_VALUE + 1))
+            )
         );
     }
 

@@ -12,7 +12,7 @@ import java.io.OutputStream;
 public class XorCryptor extends Cryptor {
 
     @Override
-    public CryptorAlgorithm getAlgorithmName() {
+    public CryptorAlgorithm getAlgorithm() {
         return CryptorAlgorithm.XOR;
     }
 

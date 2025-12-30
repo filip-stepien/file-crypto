@@ -3,6 +3,7 @@ package xyz.cursedman.filecrypto.keys;
 import xyz.cursedman.filecrypto.cryptors.Cryptor;
 import xyz.cursedman.filecrypto.cryptors.CryptorKey;
 
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
 
@@ -15,6 +16,8 @@ public interface KeyCreator {
      * map: fieldId -> user value
      */
     CryptorKey createKey(Map<String, String> fieldValues);
+
+    CryptorKey createKey(String keyInput);
 
     Cryptor createCryptor(CryptorKey key);
 

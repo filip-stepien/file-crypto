@@ -10,6 +10,7 @@ import xyz.cursedman.filecrypto.App;
 import xyz.cursedman.filecrypto.cryptors.Cryptor;
 import xyz.cursedman.filecrypto.cryptors.CryptorKey;
 import xyz.cursedman.filecrypto.cryptors.HeaderCryptor;
+import xyz.cursedman.filecrypto.cryptors.ZipFileCryptor;
 import xyz.cursedman.filecrypto.keys.KeyCreator;
 import xyz.cursedman.filecrypto.utils.FileSizeFormatter;
 import xyz.cursedman.filecrypto.utils.Popup;
@@ -19,10 +20,7 @@ import xyz.cursedman.filecrypto.utils.TimeFormatter;
 import java.awt.Desktop;
 import java.io.*;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import java.nio.file.Paths;
 
 public class EncryptTabController {
 
@@ -41,24 +39,6 @@ public class EncryptTabController {
     private void setLoading(boolean loading) {
         progressBarController.setLoading(loading);
         loadingOverlayController.setVisible(loading);
-    }
-
-    private InputStream zipToInputStream(Collection<File> files, Cryptor cryptor) throws IOException {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream);
-
-        for (File file : files) {
-            ZipEntry zipEntry = new ZipEntry(file.getName());
-            zipOutputStream.putNextEntry(zipEntry);
-
-            try (InputStream fileInputStream = new FileInputStream(file)) {
-                cryptor.encrypt(fileInputStream, zipOutputStream);
-            }
-
-            zipOutputStream.closeEntry();
-        }
-
-        return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
     }
 
     private void showEncryptionFinishedPopup(String filePath, long timeTakenMs, long fileSizeBytes) {
@@ -99,21 +79,14 @@ public class EncryptTabController {
         App.reload();
     }
 
-    private Task<Void> getEncryptionTask(Cryptor cryptor, String fullOutputFileName) {
+    private Task<Void> getEncryptionTask(ZipFileCryptor zipCryptor, String outputFileName) {
         Stopwatch stopwatch = new Stopwatch();
 
         return new Task<>() {
             @Override
             protected Void call() throws Exception {
                 stopwatch.start();
-
-                try (
-                    InputStream zipStream = zipToInputStream(fileTableController.getFiles(), cryptor);
-                    OutputStream out = new FileOutputStream(fullOutputFileName)
-                ) {
-                    zipStream.transferTo(out);
-                }
-
+                zipCryptor.createEncryptedZip(fileTableController.getFiles(), outputFileName);
                 stopwatch.stop();
                 return null;
             }
@@ -124,10 +97,10 @@ public class EncryptTabController {
                 setLoading(false);
 
                 long timeTakenMs = stopwatch.getElapsedMillis();
-                long outputFileSizeBytes = new File(fullOutputFileName).length();
+                long outputFileSizeBytes = new File(outputFileName).length();
 
                 showEncryptionFinishedPopup(
-                    fullOutputFileName,
+                    outputFileName,
                     timeTakenMs,
                     outputFileSizeBytes
                 );
@@ -184,17 +157,19 @@ public class EncryptTabController {
             return;
         }
 
-        String fileExtension = ".encrypted.zip";
-        String fullOutputFileName = outputPath.resolve(fileName + fileExtension).toString();
+        String fileExtension = ".enc";
+        String outputFileName = outputPath.resolve(fileName + fileExtension).toString();
 
         AlgorithmSettingsController algorithmSettingsController =
             encryptionSettingsController.getAlgorithmSettingsController();
 
         KeyCreator keyCreator = algorithmSettingsController.getKeyCreator();
         CryptorKey key = keyCreator.createKey(algorithmSettingsController.getFieldValues());
-        Cryptor cryptor = new HeaderCryptor(keyCreator.createCryptor(key));
+        ZipFileCryptor zipCryptor = new ZipFileCryptor(
+            keyCreator.createCryptor(key)
+        );
 
-        Task<Void> task = getEncryptionTask(cryptor, fullOutputFileName);
+        Task<Void> task = getEncryptionTask(zipCryptor, outputFileName);
         Thread thread = new Thread(task);
 
         thread.setDaemon(true);

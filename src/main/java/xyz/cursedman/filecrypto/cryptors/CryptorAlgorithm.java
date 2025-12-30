@@ -18,7 +18,7 @@ public enum CryptorAlgorithm {
     AES("AES");
 
     @Getter
-    private final String algorithmName;
+    private final String name;
 
     public static final int MAX_ALGORITHM_NAME_LENGTH = 128;
 
@@ -34,7 +34,7 @@ public enum CryptorAlgorithm {
 
     public static CryptorAlgorithm fromAlgorithmName(String text) {
         return Arrays.stream(values())
-            .filter(algorithm -> algorithm.getAlgorithmName().equals(text))
+            .filter(algorithm -> algorithm.getName().equals(text))
             .findFirst()
             .orElseThrow(() ->
                 new IllegalArgumentException("Cannot map algorithm name to enum constant: " + text)

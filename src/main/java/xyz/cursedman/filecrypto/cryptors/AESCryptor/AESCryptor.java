@@ -24,7 +24,7 @@ public class AESCryptor extends Cryptor {
     }
 
     @Override
-    public CryptorAlgorithm getAlgorithmName() {
+    public CryptorAlgorithm getAlgorithm() {
         return CryptorAlgorithm.AES;
     }
 

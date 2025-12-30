@@ -21,7 +21,7 @@ public class DecryptionSettingsController {
         outputFilePathController.setLabel("Output path");
         inputFilePathController.setLabel("Encrypted file path");
         inputFilePathController.setOnPathSelected(path -> {
-            outputFilePathController.setPath(path);
+            outputFilePathController.setPath(path.getParent().resolve("decrypted"));
         });
     }
 }

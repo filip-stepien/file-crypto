@@ -19,7 +19,7 @@ public abstract class Cryptor {
 
     private CryptorKey key;
 
-    public CryptorAlgorithm getAlgorithmName() {
+    public CryptorAlgorithm getAlgorithm() {
         return null;
     }
 

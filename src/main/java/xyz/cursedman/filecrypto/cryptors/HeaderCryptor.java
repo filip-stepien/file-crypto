@@ -1,6 +1,5 @@
 package xyz.cursedman.filecrypto.cryptors;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import xyz.cursedman.filecrypto.exceptions.InvalidEncryptedHeaderException;
 
@@ -21,7 +20,7 @@ public class HeaderCryptor extends Cryptor {
 
     private void writeHeader(OutputStream out) throws IOException {
         byte[] algorithmNameBytes =
-            cryptor.getAlgorithmName().toString().getBytes(StandardCharsets.UTF_8);
+            cryptor.getAlgorithm().getName().getBytes(StandardCharsets.UTF_8);
 
         DataOutputStream dataOut = new DataOutputStream(out);
 

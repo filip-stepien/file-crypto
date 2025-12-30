@@ -21,13 +21,13 @@ public class XorKeyCreator implements KeyCreator {
     @Override
     public List<KeyInputField> getKeyInputFields() {
         return List.of(
-                KeyInputField.builder()
-                        .type(KeyInputType.HEX)
-                        .label("key")
-                        .id("key")
-                        .description("key as hex")
-                        .placeholder("Enter a hexadecimal key...")
-                        .build()
+            KeyInputField.builder()
+                .type(KeyInputType.HEX)
+                .label("key")
+                .id("key")
+                .description("key as hex")
+                .placeholder("Enter a hexadecimal key...")
+                .build()
         );
     }
 
@@ -35,21 +35,28 @@ public class XorKeyCreator implements KeyCreator {
     public CryptorKey createKey(Map<String, String> fieldValues) {
         byte[] bytes = HexFormat.of().parseHex(fieldValues.get("key"));
         return XorCryptorKey.builder()
-                .key(bytes)
-                .build();
+            .key(bytes)
+            .build();
+    }
+
+    @Override
+    public CryptorKey createKey(String keyInput) {
+        return XorCryptorKey.builder()
+            .key(HexFormat.of().parseHex(keyInput))
+            .build();
     }
 
     @Override
     public Collection<KeyInputField> getKeyGeneratorFields() {
         return List.of(
-                KeyInputField.builder()
-                        .id("length")
-                        .label("length")
-                        .defaultValue("10")
-                        .description("key length")
-                        .type(KeyInputType.NUMBER)
-                        .placeholder("Enter a key length")
-                        .build()
+            KeyInputField.builder()
+                .id("length")
+                .label("length")
+                .defaultValue("10")
+                .description("key length")
+                .type(KeyInputType.NUMBER)
+                .placeholder("Enter a key length")
+                .build()
         );
     }
 
@@ -63,8 +70,8 @@ public class XorKeyCreator implements KeyCreator {
         random.nextBytes(randomKey);
 
         return XorCryptorKey.builder()
-                .key(randomKey)
-                .build();
+            .key(randomKey)
+            .build();
     }
 
     @Override

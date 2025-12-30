@@ -1,6 +1,7 @@
 package xyz.cursedman.filecrypto.cryptors;
 
-@SuppressWarnings("unused")
-public interface CryptorKey {
+import java.io.Serializable;
 
+@SuppressWarnings("unused")
+public interface CryptorKey extends Serializable {
 }

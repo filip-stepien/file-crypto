@@ -31,7 +31,7 @@ public class AlgorithmSettingsController {
     private void initialize() {
         algorithmComboBox.getItems().addAll(
             Arrays.stream(CryptorAlgorithm.values())
-                .map(CryptorAlgorithm::getAlgorithmName)
+                .map(CryptorAlgorithm::getName)
                 .toList()
         );
 
@@ -46,7 +46,7 @@ public class AlgorithmSettingsController {
     }
 
     private void selectAlgorithm(CryptorAlgorithm algorithm) {
-        algorithmComboBox.getSelectionModel().select(algorithm.getAlgorithmName());
+        algorithmComboBox.getSelectionModel().select(algorithm.getName());
         setKeyCreator(CryptorAlgorithm.getKeyCreator(algorithm));
     }
 

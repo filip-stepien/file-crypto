@@ -13,7 +13,7 @@ import java.io.OutputStream;
 public class CaesarCryptor extends Cryptor {
 
     @Override
-    public CryptorAlgorithm getAlgorithmName() {
+    public CryptorAlgorithm getAlgorithm() {
         return CryptorAlgorithm.CAESAR;
     }
 
