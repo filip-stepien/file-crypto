@@ -8,22 +8,25 @@
      xmlns:fx="http://javafx.com/fxml/1"
      fx:controller="xyz.cursedman.filecrypto.controllers.DecryptTabController"
 >
-    <AnchorPane minHeight="0.0" minWidth="0.0">
-        <BorderPane
-            AnchorPane.bottomAnchor="0.0"
-            AnchorPane.leftAnchor="0.0"
-            AnchorPane.rightAnchor="0.0"
-            AnchorPane.topAnchor="0.0"
-        >
-            <padding>
-                <Insets bottom="10.0" left="20.0" right="20.0" top="20.0"/>
-            </padding>
-            <top>
-                <fx:include fx:id="decryptionSettings" source="decryption-settings.fxml" />
-            </top>
-            <bottom>
-                <fx:include fx:id="progressBar" source="progress-bar.fxml" />
-            </bottom>
-        </BorderPane>
-    </AnchorPane>
+    <StackPane>
+        <AnchorPane minHeight="0.0" minWidth="0.0">
+            <BorderPane
+                AnchorPane.bottomAnchor="0.0"
+                AnchorPane.leftAnchor="0.0"
+                AnchorPane.rightAnchor="0.0"
+                AnchorPane.topAnchor="0.0"
+            >
+                <padding>
+                    <Insets bottom="10.0" left="20.0" right="20.0" top="20.0"/>
+                </padding>
+                <top>
+                    <fx:include fx:id="decryptionSettings" source="decryption-settings.fxml" />
+                </top>
+                <bottom>
+                    <fx:include fx:id="progressBar" source="progress-bar.fxml" />
+                </bottom>
+            </BorderPane>
+        </AnchorPane>
+        <fx:include fx:id="loadingOverlay" source="loading-overlay.fxml" />
+    </StackPane>
 </Tab>

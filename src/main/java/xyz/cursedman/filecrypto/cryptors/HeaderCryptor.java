@@ -10,13 +10,13 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class HeaderCryptor extends Cryptor {
 
-    public record Header(String algorithmName) {}
-
     private final Cryptor cryptor;
 
-    private static final String MAGIC_STRING = "FILE-CRYPTO";
+    public record Header(String algorithmName) {}
 
-    private static final byte[] MAGIC_BYTES = MAGIC_STRING.getBytes(StandardCharsets.UTF_8);
+    public static final String MAGIC_STRING = "FILE-CRYPTO";
+
+    public static final byte[] MAGIC_BYTES = MAGIC_STRING.getBytes(StandardCharsets.UTF_8);
 
     private void writeHeader(OutputStream out) throws IOException {
         byte[] algorithmNameBytes =

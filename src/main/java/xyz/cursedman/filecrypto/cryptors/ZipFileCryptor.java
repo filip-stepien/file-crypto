@@ -1,12 +1,11 @@
 package xyz.cursedman.filecrypto.cryptors;
 
-import lombok.RequiredArgsConstructor;
+import xyz.cursedman.filecrypto.exceptions.InvalidKeyException;
 
 import java.io.*;
 import java.util.Collection;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
+import java.util.Enumeration;
+import java.util.zip.*;
 
 public class ZipFileCryptor {
 
@@ -40,43 +39,44 @@ public class ZipFileCryptor {
             FileOutputStream fileOutStream = new FileOutputStream(outputFilePath)
         ) {
             cryptor.encrypt(fileInStream, fileOutStream);
+        } finally {
+            tempZip.delete();
         }
-
-//        finally {
-//            tempZip.delete();
-//        }
     }
 
-    public void extractEncryptedZip(String encryptedZipPath, String outputDirPath) throws IOException {
-        File tempZip = File.createTempFile("temp", ".enc.zip");
+    public void extractEncryptedZip(InputStream encryptedStream, String outputDirPath) throws IOException {
+        File tempZip = File.createTempFile("temp", ".zip");
 
-        try (
-            FileInputStream tempFileInStream = new FileInputStream(encryptedZipPath);
-            FileOutputStream tempFileOutStream = new FileOutputStream(tempZip)
-        ) {
-            cryptor.decrypt(tempFileInStream, tempFileOutStream);
+        try (FileOutputStream tempOut = new FileOutputStream(tempZip)) {
+            cryptor.decrypt(encryptedStream, tempOut);
         }
 
-        try (
-            FileInputStream fileInStream = new FileInputStream(tempZip);
-            ZipInputStream zipInStream = new ZipInputStream(fileInStream)
-        ) {
-            ZipEntry entry;
-            while ((entry = zipInStream.getNextEntry()) != null) {
-                File outFile = new File(outputDirPath, entry.getName());
-                outFile.getParentFile().mkdirs();
+        try (ZipFile zipFile = new ZipFile(tempZip)) {
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
 
-                try (FileOutputStream fileOutStream = new FileOutputStream(outFile)) {
-                    zipInStream.transferTo(fileOutStream);
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
+                File outFile = new File(outputDirPath, entry.getName());
+
+                if (entry.isDirectory()) {
+                    outFile.mkdirs();
+                    continue;
                 }
 
-                zipInStream.closeEntry();
-            }
-        }
+                outFile.getParentFile().mkdirs();
 
-//        finally {
-//            tempZip.delete();
-//        }
+                try (
+                    InputStream zipInStream = zipFile.getInputStream(entry);
+                    FileOutputStream fileOutStream = new FileOutputStream(outFile))
+                {
+                    zipInStream.transferTo(fileOutStream);
+                }
+            }
+        } catch (ZipException e) {
+            throw new InvalidKeyException("Invalid decryption key or corrupted ZIP", e);
+        } finally {
+            tempZip.delete();
+        }
     }
 }
 
