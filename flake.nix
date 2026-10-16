@@ -7,7 +7,7 @@
     { self, ... }@inputs:
 
     let
-      javaVersion = 23; # Change this value to update the whole stack
+      javaVersion = 25; # Change this value to update the whole stack
 
       supportedSystems = [
         "x86_64-linux"
@@ -58,9 +58,20 @@
               let
                 loadLombok = "-javaagent:${pkgs.lombok}/share/java/lombok.jar";
                 prev = "\${JAVA_TOOL_OPTIONS:+ $JAVA_TOOL_OPTIONS}";
+                javafxLibs = pkgs.lib.makeLibraryPath (
+                  with pkgs;
+                  [
+                    glib
+                    gtk3
+                    libGL
+                    libXxf86vm
+                    libXtst
+                  ]
+                );
               in
               ''
                 export JAVA_TOOL_OPTIONS="${loadLombok}${prev}"
+                export LD_LIBRARY_PATH="${javafxLibs}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
               '';
           };
         }

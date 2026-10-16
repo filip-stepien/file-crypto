@@ -107,7 +107,7 @@
                     <artifactId>javafx-maven-plugin</artifactId>
                     <version>0.0.8</version>
                     <configuration>
-                        <mainClass>xyz.cursedman.filecrypto.HelloApplication</mainClass>
+                        <mainClass>xyz.cursedman.filecrypto/xyz.cursedman.filecrypto.App</mainClass>
                     </configuration>
                 </plugin>
             </plugins>
