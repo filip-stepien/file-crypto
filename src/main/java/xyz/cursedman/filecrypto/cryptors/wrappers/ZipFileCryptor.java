@@ -1,5 +1,6 @@
-package xyz.cursedman.filecrypto.cryptors;
+package xyz.cursedman.filecrypto.cryptors.wrappers;
 
+import xyz.cursedman.filecrypto.cryptors.Cryptor;
 import xyz.cursedman.filecrypto.exceptions.InvalidKeyException;
 
 import java.io.*;

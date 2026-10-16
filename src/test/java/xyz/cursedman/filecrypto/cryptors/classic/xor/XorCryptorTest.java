@@ -1,4 +1,4 @@
-package xyz.cursedman.filecrypto.cryptors.XorCryptor;
+package xyz.cursedman.filecrypto.cryptors.classic.xor;
 
 import org.junit.jupiter.api.Test;
 

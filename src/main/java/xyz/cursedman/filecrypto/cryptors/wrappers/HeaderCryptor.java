@@ -1,6 +1,8 @@
-package xyz.cursedman.filecrypto.cryptors;
+package xyz.cursedman.filecrypto.cryptors.wrappers;
 
 import lombok.RequiredArgsConstructor;
+import xyz.cursedman.filecrypto.cryptors.Cryptor;
+import xyz.cursedman.filecrypto.cryptors.CryptorAlgorithm;
 import xyz.cursedman.filecrypto.exceptions.InvalidEncryptedHeaderException;
 
 import java.io.*;

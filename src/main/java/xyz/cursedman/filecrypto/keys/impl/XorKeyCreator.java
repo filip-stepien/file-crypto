@@ -1,10 +1,10 @@
 package xyz.cursedman.filecrypto.keys.impl;
 
-import xyz.cursedman.filecrypto.cryptors.CaesarCryptor.CaesarCryptor;
+import xyz.cursedman.filecrypto.cryptors.classic.caesar.CaesarCryptor;
 import xyz.cursedman.filecrypto.cryptors.Cryptor;
 import xyz.cursedman.filecrypto.cryptors.CryptorKey;
-import xyz.cursedman.filecrypto.cryptors.XorCryptor.XorCryptor;
-import xyz.cursedman.filecrypto.cryptors.XorCryptor.XorCryptorKey;
+import xyz.cursedman.filecrypto.cryptors.classic.xor.XorCryptor;
+import xyz.cursedman.filecrypto.cryptors.classic.xor.XorCryptorKey;
 import xyz.cursedman.filecrypto.keys.KeyCreator;
 import xyz.cursedman.filecrypto.keys.KeyInputField;
 import xyz.cursedman.filecrypto.keys.KeyInputType;

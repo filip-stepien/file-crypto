@@ -1,4 +1,4 @@
-package xyz.cursedman.filecrypto.cryptors.AESCryptor;
+package xyz.cursedman.filecrypto.cryptors.aes;
 
 import xyz.cursedman.filecrypto.cryptors.Cryptor;
 import xyz.cursedman.filecrypto.cryptors.CryptorAlgorithm;

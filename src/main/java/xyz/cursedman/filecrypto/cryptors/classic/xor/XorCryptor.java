@@ -1,4 +1,4 @@
-package xyz.cursedman.filecrypto.cryptors.XorCryptor;
+package xyz.cursedman.filecrypto.cryptors.classic.xor;
 
 import lombok.experimental.SuperBuilder;
 import xyz.cursedman.filecrypto.cryptors.Cryptor;

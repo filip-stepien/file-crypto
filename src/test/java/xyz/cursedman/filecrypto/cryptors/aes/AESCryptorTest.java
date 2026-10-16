@@ -1,4 +1,4 @@
-package xyz.cursedman.filecrypto.cryptors.AESCryptor;
+package xyz.cursedman.filecrypto.cryptors.aes;
 
 import org.junit.jupiter.api.Test;
 import xyz.cursedman.filecrypto.cryptors.Cryptor;

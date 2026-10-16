@@ -1,4 +1,4 @@
-package xyz.cursedman.filecrypto.cryptors.CaesarCryptor;
+package xyz.cursedman.filecrypto.cryptors.classic.caesar;
 
 import lombok.Builder;
 import lombok.Getter;

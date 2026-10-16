@@ -1,9 +1,9 @@
 package xyz.cursedman.filecrypto.keys.impl;
 
-import xyz.cursedman.filecrypto.cryptors.AESCryptor.AESCryptor;
-import xyz.cursedman.filecrypto.cryptors.AESCryptor.AESCryptorKey;
-import xyz.cursedman.filecrypto.cryptors.CaesarCryptor.CaesarCryptor;
-import xyz.cursedman.filecrypto.cryptors.CaesarCryptor.CaesarCryptorKey;
+import xyz.cursedman.filecrypto.cryptors.aes.AESCryptor;
+import xyz.cursedman.filecrypto.cryptors.aes.AESCryptorKey;
+import xyz.cursedman.filecrypto.cryptors.classic.caesar.CaesarCryptor;
+import xyz.cursedman.filecrypto.cryptors.classic.caesar.CaesarCryptorKey;
 import xyz.cursedman.filecrypto.cryptors.Cryptor;
 import xyz.cursedman.filecrypto.cryptors.CryptorKey;
 import xyz.cursedman.filecrypto.keys.KeyCreator;

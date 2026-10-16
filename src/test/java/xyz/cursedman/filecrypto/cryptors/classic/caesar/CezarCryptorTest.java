@@ -1,4 +1,4 @@
-package xyz.cursedman.filecrypto.cryptors.CaesarCryptor;
+package xyz.cursedman.filecrypto.cryptors.classic.caesar;
 
 import org.junit.jupiter.api.Test;
 import xyz.cursedman.filecrypto.cryptors.Cryptor;
