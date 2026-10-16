@@ -3,6 +3,7 @@ package xyz.cursedman.filecrypto.cryptors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import xyz.cursedman.filecrypto.keys.KeyCreator;
+import xyz.cursedman.filecrypto.keys.impl.AESGCMKeyCreator;
 import xyz.cursedman.filecrypto.keys.impl.AESKeyCreator;
 import xyz.cursedman.filecrypto.keys.impl.CaesarKeyCreator;
 import xyz.cursedman.filecrypto.keys.impl.XorKeyCreator;
@@ -15,7 +16,8 @@ public enum CryptorAlgorithm {
 
     CAESAR("Caesar Cipher"),
     XOR("XOR Cipher"),
-    AES("AES");
+    AES("AES"),
+    AES_GCM("AES-GCM");
 
     @Getter
     private final String name;
@@ -25,7 +27,8 @@ public enum CryptorAlgorithm {
     private static final Map<CryptorAlgorithm, KeyCreator> KEY_CREATORS = Map.of(
         CAESAR, new CaesarKeyCreator(),
         XOR, new XorKeyCreator(),
-        AES, new AESKeyCreator()
+        AES, new AESKeyCreator(),
+        AES_GCM, new AESGCMKeyCreator()
     );
 
     public static KeyCreator getKeyCreator(CryptorAlgorithm algorithm) {
