@@ -359,7 +359,7 @@ public class BenchmarkTabController {
 
         try {
             BenchmarkCsvExporter.export(file.toPath(), results);
-            Popup.info("Export finished", "Results exported", file.getAbsolutePath());
+            progressBarController.setLabel("Results exported to " + file.getAbsolutePath());
         } catch (IOException | RuntimeException e) {
             showError("Export error", "Could not export results", e);
         }
@@ -388,7 +388,7 @@ public class BenchmarkTabController {
                 saveChart(entry.getValue(), new File(directory, entry.getKey()));
             }
 
-            Popup.info("Export finished", "Charts exported", directory.getAbsolutePath());
+            progressBarController.setLabel("Charts exported to " + directory.getAbsolutePath());
         } catch (IOException | RuntimeException e) {
             showError("Export error", "Could not export charts", e);
         } finally {
