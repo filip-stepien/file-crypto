@@ -12,6 +12,8 @@ import java.io.OutputStream;
 @SuperBuilder
 public class CaesarCryptor extends Cryptor {
 
+    private static final int BUFFER_SIZE = 8192;
+
     @Override
     public CryptorAlgorithm getAlgorithm() {
         return CryptorAlgorithm.CAESAR;
@@ -19,23 +21,24 @@ public class CaesarCryptor extends Cryptor {
 
     @Override
     public void encrypt(InputStream in, OutputStream out) throws IOException {
-        CaesarCryptorKey key = (CaesarCryptorKey) getKey();
-        int shift = key.getShift();
-
-        int data;
-        while ((data = in.read()) != -1) {
-            out.write((data + shift) & 0xFF); // byte-wise shift, wrap around 0-255
-        }
+        shift(in, out, ((CaesarCryptorKey) getKey()).getShift());
     }
 
     @Override
     public void decrypt(InputStream in, OutputStream out) throws IOException {
-        CaesarCryptorKey key = (CaesarCryptorKey) getKey();
-        int shift = key.getShift();
+        shift(in, out, -((CaesarCryptorKey) getKey()).getShift());
+    }
 
-        int data;
-        while ((data = in.read()) != -1) {
-            out.write((data - shift) & 0xFF); // reverse shift, wrap around
+    private void shift(InputStream in, OutputStream out, int shift) throws IOException {
+        byte[] buffer = new byte[BUFFER_SIZE];
+        int read;
+
+        while ((read = in.read(buffer)) != -1) {
+            for (int i = 0; i < read; i++) {
+                buffer[i] = (byte) (buffer[i] + shift);
+            }
+
+            out.write(buffer, 0, read);
         }
     }
 }

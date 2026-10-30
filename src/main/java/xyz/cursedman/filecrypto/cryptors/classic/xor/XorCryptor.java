@@ -11,6 +11,8 @@ import java.io.OutputStream;
 @SuperBuilder
 public class XorCryptor extends Cryptor {
 
+    private static final int BUFFER_SIZE = 8192;
+
     @Override
     public CryptorAlgorithm getAlgorithm() {
         return CryptorAlgorithm.XOR;
@@ -32,11 +34,22 @@ public class XorCryptor extends Cryptor {
         int keyLen = keyBytes.length;
         if (keyLen == 0) throw new IllegalArgumentException("XOR key cannot be empty");
 
-        int data;
-        int i = 0;
-        while ((data = in.read()) != -1) {
-            out.write(data ^ keyBytes[i % keyLen]);
-            i++;
+        byte[] keyStream = new byte[BUFFER_SIZE + keyLen];
+        for (int i = 0; i < keyStream.length; i++) {
+            keyStream[i] = keyBytes[i % keyLen];
+        }
+
+        byte[] buffer = new byte[BUFFER_SIZE];
+        int keyOffset = 0;
+        int read;
+
+        while ((read = in.read(buffer)) != -1) {
+            for (int i = 0; i < read; i++) {
+                buffer[i] ^= keyStream[keyOffset + i];
+            }
+
+            keyOffset = (keyOffset + read) % keyLen;
+            out.write(buffer, 0, read);
         }
     }
 }

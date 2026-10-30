@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.Random;
+
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 class XorCryptorTest {
@@ -40,5 +42,36 @@ class XorCryptorTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         cryptor.decrypt(new ByteArrayInputStream(expectedEncrypted), out);
         assertArrayEquals(original, out.toByteArray());
+    }
+
+    @Test
+    void encryptKeepsKeyPositionAcrossBufferBoundaries() throws Exception {
+        byte[] longKey = {7, 13, 42, 99, 1, 5, 77};
+        XorCryptor longKeyCryptor = XorCryptor.builder()
+                .key(XorCryptorKey.builder().key(longKey).build())
+                .build();
+        byte[] data = new byte[3 * 8192 + 17];
+        new Random(42).nextBytes(data);
+
+        byte[] expected = new byte[data.length];
+        for (int i = 0; i < data.length; i++) {
+            expected[i] = (byte) (data[i] ^ longKey[i % longKey.length]);
+        }
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        longKeyCryptor.encrypt(new ShortReadInputStream(data), out);
+        assertArrayEquals(expected, out.toByteArray());
+    }
+
+    private static class ShortReadInputStream extends ByteArrayInputStream {
+
+        ShortReadInputStream(byte[] data) {
+            super(data);
+        }
+
+        @Override
+        public int read(byte[] b, int off, int len) {
+            return super.read(b, off, Math.min(len, 1000));
+        }
     }
 }
