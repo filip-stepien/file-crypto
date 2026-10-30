@@ -68,10 +68,18 @@
                     libXtst
                   ]
                 );
+                gsettingsSchemas = pkgs.lib.concatMapStringsSep ":" (pkg: "${pkg}/share/gsettings-schemas/${pkg.name}") (
+                  with pkgs;
+                  [
+                    gsettings-desktop-schemas
+                    gtk3
+                  ]
+                );
               in
               ''
                 export JAVA_TOOL_OPTIONS="${loadLombok}${prev}"
                 export LD_LIBRARY_PATH="${javafxLibs}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+                export XDG_DATA_DIRS="${gsettingsSchemas}''${XDG_DATA_DIRS:+:$XDG_DATA_DIRS}"
               '';
           };
         }
