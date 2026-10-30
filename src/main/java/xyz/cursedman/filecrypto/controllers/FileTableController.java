@@ -60,7 +60,7 @@ public class FileTableController {
         setItemCount();
     }
 
-    private void addFiles(List<File> files) {
+    public void addFiles(List<File> files) {
         List<File> newFiles = files.stream()
             .filter(fileSet::add)
             .toList();
