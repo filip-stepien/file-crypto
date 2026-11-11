@@ -64,8 +64,8 @@
                     glib
                     gtk3
                     libGL
-                    libXxf86vm
-                    libXtst
+                    libxxf86vm
+                    libxtst
                   ]
                 );
                 gsettingsSchemas = pkgs.lib.concatMapStringsSep ":" (pkg: "${pkg}/share/gsettings-schemas/${pkg.name}") (
