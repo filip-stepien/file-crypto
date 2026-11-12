@@ -9,6 +9,7 @@ module xyz.cursedman.filecrypto {
     requires java.desktop;
 
     opens xyz.cursedman.filecrypto.controllers to javafx.fxml;
+    opens xyz.cursedman.filecrypto.controls to javafx.fxml;
 
     exports xyz.cursedman.filecrypto;
 }

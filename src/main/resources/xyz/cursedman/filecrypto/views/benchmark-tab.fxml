@@ -5,6 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import xyz.cursedman.filecrypto.controls.LabeledProgressBar?>
 
 <Tab text="Benchmark" xmlns="http://javafx.com/javafx/17.0.12"
      xmlns:fx="http://javafx.com/fxml/1"
@@ -89,6 +90,9 @@
                 </VBox>
                 <fx:include fx:id="loadingOverlay" source="loading-overlay.fxml"/>
             </StackPane>
+            <!-- while running: current pass, current measurement (repetitions), whole run (below) -->
+            <LabeledProgressBar fx:id="passProgress"/>
+            <LabeledProgressBar fx:id="measurementProgress"/>
             <fx:include fx:id="progressBar" source="progress-bar.fxml"/>
         </VBox>
 </Tab>

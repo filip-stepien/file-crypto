@@ -1,5 +1,6 @@
 package xyz.cursedman.filecrypto.controllers;
 
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -19,8 +20,10 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import xyz.cursedman.filecrypto.benchmark.BenchmarkCsvExporter;
 import xyz.cursedman.filecrypto.benchmark.BenchmarkResult;
+import xyz.cursedman.filecrypto.benchmark.BenchmarkRun;
 import xyz.cursedman.filecrypto.benchmark.CryptorBenchmark;
 import xyz.cursedman.filecrypto.benchmark.TestFileSizes;
+import xyz.cursedman.filecrypto.controls.LabeledProgressBar;
 import xyz.cursedman.filecrypto.cryptors.CryptorAlgorithm;
 import xyz.cursedman.filecrypto.utils.FileSizeFormatter;
 import xyz.cursedman.filecrypto.utils.Popup;
@@ -34,6 +37,9 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
@@ -84,6 +90,12 @@ public class BenchmarkTabController {
 
     @FXML
     private BarChart<String, Number> overheadChart;
+
+    @FXML
+    private LabeledProgressBar passProgress;
+
+    @FXML
+    private LabeledProgressBar measurementProgress;
 
     private final Map<CryptorAlgorithm, CheckBox> algorithmCheckBoxes = new LinkedHashMap<>();
 
@@ -147,16 +159,31 @@ public class BenchmarkTabController {
             .toList();
     }
 
-    private void finishTask(String label) {
+    private static String percent(double fraction) {
+        return Math.round(fraction * 100) + "%";
+    }
+
+    private void setDetailBarsShown(boolean shown) {
+        passProgress.setShown(shown);
+        measurementProgress.setShown(shown);
+    }
+
+    private void endTask() {
+        setDetailBarsShown(false);
         loadingOverlayController.setVisible(false);
+        progressBarController.unbind();
+        progressBarController.hideTaskButtons();
         progressBarController.setButtonDisabled(false);
+    }
+
+    private void finishTask(String label) {
+        endTask();
         progressBarController.setProgress(1);
         progressBarController.setLabel(label);
     }
 
     private void failTask() {
-        loadingOverlayController.setVisible(false);
-        progressBarController.setButtonDisabled(false);
+        endTask();
         progressBarController.setLoading(false);
         progressBarController.setLabel("Failed");
     }
@@ -177,26 +204,65 @@ public class BenchmarkTabController {
 
         CryptorBenchmark benchmark = new CryptorBenchmark(repetitionsSpinner.getValue());
         Stopwatch stopwatch = new Stopwatch();
+        AtomicReference<Future<?>> currentMeasurement = new AtomicReference<>();
+        AtomicReference<BenchmarkRun> run = new AtomicReference<>();
+        AtomicBoolean partialShown = new AtomicBoolean();
 
-        Task<List<BenchmarkResult>> task = new Task<>() {
+        Task<BenchmarkRun> task = new Task<>() {
             @Override
-            protected List<BenchmarkResult> call() throws Exception {
+            protected BenchmarkRun call() throws Exception {
                 stopwatch.start();
-                List<BenchmarkResult> benchmarkResults = benchmark.run(files, algorithms, (done, total, message) -> {
-                    updateProgress(done, total);
-                    updateMessage(message + " (" + done + "/" + total + ")");
-                });
+                BenchmarkRun benchmarkRun = benchmark.run(
+                    files,
+                    algorithms,
+                    new CryptorBenchmark.ProgressListener() {
+                        @Override
+                        public void onProgress(long done, long total, String message) {
+                            updateProgress(done, total);
+                            updateMessage(message + " · total " + (total > 0 ? done * 100 / total : 100) + "%");
+                        }
+
+                        @Override
+                        public void onMeasurement(double fraction, String message) {
+                            measurementProgress.update(fraction, message + " · " + percent(fraction));
+                        }
+
+                        @Override
+                        public void onPass(double fraction, String operation) {
+                            passProgress.update(fraction, operation.isEmpty() ? "" : operation + " · " + percent(fraction));
+                        }
+                    },
+                    currentMeasurement::set
+                );
                 stopwatch.stop();
-                return benchmarkResults;
+                run.set(benchmarkRun);
+                Platform.runLater(this::showPartialIfCancelled);
+                return benchmarkRun;
+            }
+
+            /*
+             * Runs on the FX thread both from cancelled() and after call() returns,
+             * whichever comes second shows the measurements completed before cancelling
+             */
+            private void showPartialIfCancelled() {
+                BenchmarkRun partial = run.get();
+                if (isCancelled() && partial != null && partialShown.compareAndSet(false, true)) {
+                    showRun(partial, "Cancelled after " + stopwatch.getFormattedElapsed(), algorithms);
+                }
             }
 
             @Override
             protected void succeeded() {
                 super.succeeded();
-                finishTask(
-                    "Finished in " + stopwatch.getFormattedElapsed() + " · " + getValue().size() + " measurements"
-                );
-                showResults(getValue(), algorithms);
+                showRun(getValue(), "Finished in " + stopwatch.getFormattedElapsed(), algorithms);
+            }
+
+            @Override
+            protected void cancelled() {
+                super.cancelled();
+                progressBarController.unbind();
+                progressBarController.setLabel("Cancelling...");
+                showPartialIfCancelled();
             }
 
             @Override
@@ -207,17 +273,27 @@ public class BenchmarkTabController {
             }
         };
 
+        progressBarController.showSkip(event -> {
+            Future<?> measurement = currentMeasurement.get();
+            if (measurement != null) {
+                measurement.cancel(true);
+            }
+        });
+        progressBarController.showCancel(event -> task.cancel());
+
+        setDetailBarsShown(true);
         startTask(task);
     }
 
-    private void startTask(Task<?> task) {
-        task.progressProperty().addListener((obs, prev, curr) -> progressBarController.setProgress(curr.doubleValue()));
-        task.messageProperty().addListener((obs, prev, curr) -> progressBarController.setLabel(curr));
+    private void showRun(BenchmarkRun run, String prefix, List<CryptorAlgorithm> algorithms) {
+        finishTask(prefix + " · " + run.results().size() + " measurements");
+        showResults(run.results(), algorithms);
+    }
 
-        progressBarController.setLabel("Starting...");
-        progressBarController.setLoading(true);
-        progressBarController.setButtonDisabled(true);
+    private void startTask(Task<?> task) {
+        progressBarController.bind(task);
         loadingOverlayController.setVisible(true);
+        progressBarController.setButtonDisabled(true);
 
         Thread thread = new Thread(task);
         thread.setDaemon(true);
@@ -312,6 +388,9 @@ public class BenchmarkTabController {
 
                     try (OutputStream out = Files.newOutputStream(path)) {
                         for (int i = 0; i < sizeMb; i++) {
+                            if (isCancelled()) {
+                                return files;
+                            }
                             random.nextBytes(chunk);
                             out.write(chunk);
                             updateProgress(++writtenMb, totalMb);
@@ -334,6 +413,12 @@ public class BenchmarkTabController {
             }
 
             @Override
+            protected void cancelled() {
+                super.cancelled();
+                finishTask("Cancelled");
+            }
+
+            @Override
             protected void failed() {
                 super.failed();
                 failTask();
@@ -341,6 +426,7 @@ public class BenchmarkTabController {
             }
         };
 
+        progressBarController.showCancel(event -> task.cancel());
         startTask(task);
     }
 
