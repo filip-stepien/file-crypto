@@ -10,15 +10,14 @@
      xmlns:fx="http://javafx.com/fxml/1"
      fx:controller="xyz.cursedman.filecrypto.controllers.BenchmarkTabController"
 >
-    <AnchorPane minHeight="0.0" minWidth="0.0">
-        <VBox spacing="10.0">
+    <VBox spacing="10.0">
             <padding>
                 <Insets bottom="10.0" left="20.0" right="20.0" top="20.0"/>
             </padding>
-            <StackPane>
+            <StackPane VBox.vgrow="ALWAYS">
                 <VBox spacing="10.0">
-                    <HBox alignment="CENTER" spacing="20.0">
-                        <fx:include fx:id="fileTable" source="file-table.fxml"/>
+                    <HBox spacing="20.0">
+                        <fx:include fx:id="fileTable" source="file-table.fxml" HBox.hgrow="ALWAYS"/>
                         <VBox prefWidth="250.0" spacing="10.0">
                             <VBox spacing="5.0">
                                 <Label text="Benchmark options">
@@ -47,7 +46,7 @@
                                     onAction="#handleExportCharts" text="Export charts PNG..."/>
                         </VBox>
                     </HBox>
-                    <TabPane fx:id="resultsTabPane" prefHeight="380.0" tabClosingPolicy="UNAVAILABLE">
+                    <TabPane fx:id="resultsTabPane" minHeight="380.0" prefHeight="380.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
                         <Tab text="Results">
                             <TableView fx:id="resultsTable">
                                 <columnResizePolicy>
@@ -92,5 +91,4 @@
             </StackPane>
             <fx:include fx:id="progressBar" source="progress-bar.fxml"/>
         </VBox>
-    </AnchorPane>
 </Tab>

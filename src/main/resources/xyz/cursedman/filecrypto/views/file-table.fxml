@@ -19,8 +19,8 @@
         </Label>
         <Separator prefWidth="200.0" />
     </VBox>
-    <VBox>
-        <TableView fx:id="fileTableView" prefWidth="600.0">
+    <VBox VBox.vgrow="ALWAYS">
+        <TableView fx:id="fileTableView" prefWidth="600.0" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn
                     fx:id="fileIconColumn"

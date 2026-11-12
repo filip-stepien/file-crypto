@@ -4,12 +4,14 @@ import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import xyz.cursedman.filecrypto.controllers.FileTableController;
 import xyz.cursedman.filecrypto.cryptors.aes.AESCryptor;
@@ -29,6 +31,8 @@ public class App extends Application {
 
     private static final String resourcePath = "views/app.fxml";
 
+    private static final double START_HEIGHT_FACTOR = 1.25;
+
     private static Stage primaryStage;
 
     @Override
@@ -39,9 +43,16 @@ public class App extends Application {
             FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(resourcePath));
             Scene scene = new Scene(fxmlLoader.load());
             stage.setTitle("File cryptor");
-            stage.setResizable(false);
+            stage.setResizable(true);
             stage.setScene(scene);
             stage.show();
+
+            // the preferred layout size is the smallest usable one, start a bit taller so chart legends fit
+            stage.setMinWidth(stage.getWidth());
+            stage.setMinHeight(stage.getHeight());
+            Rectangle2D screen = Screen.getPrimary().getVisualBounds();
+            stage.setHeight(Math.min(stage.getHeight() * START_HEIGHT_FACTOR, screen.getHeight()));
+            stage.setY(Math.max(screen.getMinY(), (screen.getHeight() - stage.getHeight()) / 2));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
