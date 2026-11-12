@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import xyz.cursedman.filecrypto.App;
+import xyz.cursedman.filecrypto.cryptors.Cryptor;
 import xyz.cursedman.filecrypto.cryptors.CryptorKey;
 import xyz.cursedman.filecrypto.cryptors.wrappers.HeaderCryptor;
 import xyz.cursedman.filecrypto.cryptors.wrappers.ZipFileCryptor;
@@ -30,23 +31,46 @@ public class EncryptTabController {
     @FXML
     public LoadingOverlayController loadingOverlayController;
 
-    private Task<Void> getEncryptionTask(ZipFileCryptor zipCryptor, String outputFileName) {
+    private void endTask() {
+        progressBarController.unbind();
+        progressBarController.hideTaskButtons();
+        progressBarController.setButtonDisabled(false);
+        progressBarController.setLoading(false);
+        loadingOverlayController.setVisible(false);
+    }
+
+    private Task<Void> getEncryptionTask(Cryptor cryptor, String outputFileName) {
         Stopwatch stopwatch = new Stopwatch();
 
         return new Task<>() {
             @Override
             protected Void call() throws Exception {
                 stopwatch.start();
+                updateMessage("Packing files...");
+                updateProgress(-1, 1);
+
+                ZipFileCryptor zipCryptor = new ZipFileCryptor(cryptor, (done, total) -> {
+                    updateProgress(done, total);
+                    updateMessage("Encrypting " + (total > 0 ? done * 100 / total : 100) + "%");
+                });
                 zipCryptor.createEncryptedZip(fileTableController.getFiles(), outputFileName);
+
                 stopwatch.stop();
                 return null;
             }
 
             @Override
+            protected void cancelled() {
+                super.cancelled();
+                endTask();
+                progressBarController.setLabel("Cancelled");
+            }
+
+            @Override
             protected void succeeded() {
                 super.succeeded();
-                progressBarController.setLoading(false);
-                loadingOverlayController.setVisible(false);
+                endTask();
+                progressBarController.setLabel("");
 
                 Popup.finished(
                     outputFileName,
@@ -60,8 +84,8 @@ public class EncryptTabController {
             @Override
             protected void failed() {
                 super.failed();
-                progressBarController.setLoading(false);
-                loadingOverlayController.setVisible(false);
+                endTask();
+                progressBarController.setLabel("Failed");
 
                 Popup.error(
                     "Encryption error",
@@ -117,14 +141,16 @@ public class EncryptTabController {
 
         KeyCreator keyCreator = algorithmSettingsController.getKeyCreator();
         CryptorKey key = keyCreator.createKey(algorithmSettingsController.getFieldValues());
-        ZipFileCryptor zipCryptor = new ZipFileCryptor(new HeaderCryptor(keyCreator.createCryptor(key)));
-        Thread thread = new Thread(getEncryptionTask(zipCryptor, outputFileName));
-
+        Task<Void> task = getEncryptionTask(new HeaderCryptor(keyCreator.createCryptor(key)), outputFileName);
+        Thread thread = new Thread(task);
         thread.setDaemon(true);
-        thread.start();
 
-        progressBarController.setLoading(true);
+        progressBarController.bind(task);
+        progressBarController.showCancel(event -> task.cancel());
+        progressBarController.setButtonDisabled(true);
         loadingOverlayController.setVisible(true);
+
+        thread.start();
     }
 
     @FXML

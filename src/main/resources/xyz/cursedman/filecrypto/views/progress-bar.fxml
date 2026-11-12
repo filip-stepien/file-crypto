@@ -19,5 +19,7 @@
         <ProgressBar fx:id="progressBar" maxWidth="Infinity" prefHeight="25.0" progress="0" style="-fx-accent: #01D328;"/>
         <Label fx:id="progressBarLabel" />
     </StackPane>
+    <Button fx:id="skipButton" mnemonicParsing="false" prefWidth="80.0" text="Skip" visible="false" managed="false"/>
+    <Button fx:id="cancelButton" mnemonicParsing="false" prefWidth="80.0" text="Cancel" visible="false" managed="false"/>
     <Button fx:id="button" mnemonicParsing="false" prefWidth="80.0"/>
 </HBox>

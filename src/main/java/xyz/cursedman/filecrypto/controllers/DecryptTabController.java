@@ -9,6 +9,7 @@ import xyz.cursedman.filecrypto.cryptors.wrappers.ZipFileCryptor;
 import xyz.cursedman.filecrypto.keys.KeyCreator;
 import xyz.cursedman.filecrypto.utils.FileSizeFormatter;
 import xyz.cursedman.filecrypto.utils.Popup;
+import xyz.cursedman.filecrypto.utils.ProgressInputStream;
 import xyz.cursedman.filecrypto.utils.Stopwatch;
 
 import java.io.File;
@@ -31,13 +32,24 @@ public class DecryptTabController {
         String inputPath = decryptionSettingsController.getInputFilePathController().getPath().toString();
         String outputPath = decryptionSettingsController.getOutputFilePathController().getPath().toString();
         String keyString = decryptionSettingsController.getKeyInput().getText();
-        Thread thread = new Thread(getDecryptionTask(inputPath, outputPath, keyString));
-
+        Task<Void> task = getDecryptionTask(inputPath, outputPath, keyString);
+        Thread thread = new Thread(task);
         thread.setDaemon(true);
-        thread.start();
 
-        progressBarController.setLoading(true);
+        progressBarController.bind(task);
+        progressBarController.showCancel(event -> task.cancel());
+        progressBarController.setButtonDisabled(true);
         loadingOverlayController.setVisible(true);
+
+        thread.start();
+    }
+
+    private void endTask() {
+        progressBarController.unbind();
+        progressBarController.hideTaskButtons();
+        progressBarController.setButtonDisabled(false);
+        progressBarController.setLoading(false);
+        loadingOverlayController.setVisible(false);
     }
 
     private Task<Void> getDecryptionTask(String inputPath, String outputPath, String keyString) {
@@ -48,7 +60,19 @@ public class DecryptTabController {
             protected Void call() throws Exception {
                 stopwatch.start();
 
-                try (InputStream inputStream = Files.newInputStream(Path.of(inputPath))) {
+                updateMessage("Decrypting...");
+                long totalBytes = Files.size(Path.of(inputPath));
+
+                try (InputStream inputStream = new ProgressInputStream(
+                    Files.newInputStream(Path.of(inputPath)),
+                    totalBytes,
+                    done -> {
+                        updateProgress(done, totalBytes);
+                        updateMessage(done < totalBytes
+                            ? "Decrypting " + (totalBytes > 0 ? done * 100 / totalBytes : 100) + "%"
+                            : "Extracting files...");
+                    }
+                )) {
                     HeaderCryptor.Header header = HeaderCryptor.readHeader(inputStream);
                     CryptorAlgorithm algorithm = CryptorAlgorithm.fromAlgorithmName(header.algorithmName());
                     KeyCreator keyCreator = CryptorAlgorithm.getKeyCreator(algorithm);
@@ -63,10 +87,17 @@ public class DecryptTabController {
             }
 
             @Override
+            protected void cancelled() {
+                super.cancelled();
+                endTask();
+                progressBarController.setLabel("Cancelled");
+            }
+
+            @Override
             protected void succeeded() {
                 super.succeeded();
-                progressBarController.setLoading(false);
-                loadingOverlayController.setVisible(false);
+                endTask();
+                progressBarController.setLabel("");
 
                 Popup.finished(
                     outputPath,
@@ -78,8 +109,8 @@ public class DecryptTabController {
             @Override
             protected void failed() {
                 super.failed();
-                progressBarController.setLoading(false);
-                loadingOverlayController.setVisible(false);
+                endTask();
+                progressBarController.setLabel("Failed");
 
                 Popup.error(
                     "Decryption error",
