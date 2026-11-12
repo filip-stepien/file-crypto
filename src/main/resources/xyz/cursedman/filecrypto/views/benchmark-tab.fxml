@@ -29,7 +29,7 @@
                                 <Separator prefWidth="200.0"/>
                             </VBox>
                             <Label text="Algorithms"/>
-                            <VBox fx:id="algorithmsContainer" spacing="5.0"/>
+                            <MenuButton fx:id="algorithmsMenu" mnemonicParsing="false" maxWidth="Infinity"/>
                             <VBox spacing="5.0">
                                 <Label text="Repetitions per file (median)"/>
                                 <Spinner fx:id="repetitionsSpinner" editable="true" prefWidth="250.0"/>

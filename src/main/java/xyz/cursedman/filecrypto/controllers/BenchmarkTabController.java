@@ -62,7 +62,7 @@ public class BenchmarkTabController {
     private LoadingOverlayController loadingOverlayController;
 
     @FXML
-    private VBox algorithmsContainer;
+    private MenuButton algorithmsMenu;
 
     @FXML
     private Spinner<Integer> repetitionsSpinner;
@@ -106,9 +106,13 @@ public class BenchmarkTabController {
         for (CryptorAlgorithm algorithm : CryptorAlgorithm.values()) {
             CheckBox checkBox = new CheckBox(algorithm.getName());
             checkBox.setSelected(true);
+            checkBox.setMaxWidth(Double.MAX_VALUE);
+            checkBox.selectedProperty().addListener((observable, wasSelected, selected) -> updateAlgorithmsMenuText());
             algorithmCheckBoxes.put(algorithm, checkBox);
-            algorithmsContainer.getChildren().add(checkBox);
+            // hideOnClick = false keeps the dropdown open while ticking several algorithms
+            algorithmsMenu.getItems().add(new CustomMenuItem(checkBox, false));
         }
+        updateAlgorithmsMenuText();
 
         repetitionsSpinner.setValueFactory(
             new SpinnerValueFactory.IntegerSpinnerValueFactory(1, MAX_REPETITIONS, DEFAULT_REPETITIONS)
@@ -150,6 +154,17 @@ public class BenchmarkTabController {
 
     private static String formatDecimal(double value) {
         return String.format("%.2f", value);
+    }
+
+    private void updateAlgorithmsMenuText() {
+        List<CryptorAlgorithm> selected = getSelectedAlgorithms();
+        algorithmsMenu.setText(switch (selected.size()) {
+            case 0 -> "None selected";
+            case 1 -> selected.getFirst().getName();
+            default -> selected.size() == algorithmCheckBoxes.size()
+                ? "All (" + selected.size() + ")"
+                : selected.size() + " of " + algorithmCheckBoxes.size() + " selected";
+        });
     }
 
     private List<CryptorAlgorithm> getSelectedAlgorithms() {
