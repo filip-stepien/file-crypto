@@ -7,6 +7,8 @@ import xyz.cursedman.filecrypto.keys.impl.AESGCMKeyCreator;
 import xyz.cursedman.filecrypto.keys.impl.AESKeyCreator;
 import xyz.cursedman.filecrypto.keys.impl.CaesarKeyCreator;
 import xyz.cursedman.filecrypto.keys.impl.ChaCha20KeyCreator;
+import xyz.cursedman.filecrypto.keys.impl.RSAAESGCMKeyCreator;
+import xyz.cursedman.filecrypto.keys.impl.RSAOAEPKeyCreator;
 import xyz.cursedman.filecrypto.keys.impl.XorKeyCreator;
 
 import java.util.Arrays;
@@ -19,7 +21,9 @@ public enum CryptorAlgorithm {
     XOR("XOR Cipher"),
     AES("AES"),
     AES_GCM("AES-GCM"),
-    CHACHA20_POLY1305("ChaCha20-Poly1305");
+    CHACHA20_POLY1305("ChaCha20-Poly1305"),
+    RSA_OAEP("RSA-OAEP"),
+    RSA_OAEP_AES_GCM("RSA-OAEP + AES-GCM");
 
     @Getter
     private final String name;
@@ -31,7 +35,9 @@ public enum CryptorAlgorithm {
         XOR, new XorKeyCreator(),
         AES, new AESKeyCreator(),
         AES_GCM, new AESGCMKeyCreator(),
-        CHACHA20_POLY1305, new ChaCha20KeyCreator()
+        CHACHA20_POLY1305, new ChaCha20KeyCreator(),
+        RSA_OAEP, new RSAOAEPKeyCreator(),
+        RSA_OAEP_AES_GCM, new RSAAESGCMKeyCreator()
     );
 
     public static KeyCreator getKeyCreator(CryptorAlgorithm algorithm) {
