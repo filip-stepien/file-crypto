@@ -7,4 +7,6 @@ public interface FieldControl {
     Node getNode();
 
     String getControlValue();
+
+    void setControlValue(String value);
 }

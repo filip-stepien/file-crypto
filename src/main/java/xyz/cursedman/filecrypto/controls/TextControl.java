@@ -20,4 +20,9 @@ public class TextControl implements FieldControl {
     public String getControlValue() {
         return textField.getText();
     }
+
+    @Override
+    public void setControlValue(String value) {
+        textField.setText(value);
+    }
 }

@@ -21,4 +21,9 @@ public class NumberControl implements FieldControl {
     public String getControlValue() {
         return spinner.getValue().toString();
     }
+
+    @Override
+    public void setControlValue(String value) {
+        spinner.getValueFactory().setValue(Integer.parseInt(value));
+    }
 }
