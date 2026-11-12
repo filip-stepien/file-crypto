@@ -66,7 +66,8 @@
                             </BarChart>
                         </Tab>
                         <Tab text="Time vs size">
-                            <LineChart fx:id="timeChart" animated="false" title="Encryption time vs file size">
+                            <LineChart fx:id="timeChart" animated="false" legendSide="RIGHT"
+                                       title="Encryption time vs file size">
                                 <xAxis>
                                     <NumberAxis label="File size [MB]"/>
                                 </xAxis>
